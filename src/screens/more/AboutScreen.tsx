@@ -1,0 +1,49 @@
+import { ShieldCheck, Sprout } from 'lucide-react'
+import { Card } from '../../components/ui/Card'
+import { ScreenHeader } from '../../components/ui/ScreenHeader'
+import { APP_NAME, APP_VERSION } from '../../data/app'
+
+export function AboutScreen() {
+  return (
+    <div className="space-y-5">
+      <ScreenHeader title="Sobre la app" backTo={{ name: 'more' }} />
+
+      <Card tone="lavender" className="p-6 text-center">
+        <img src="/favicon.svg" alt="" className="mx-auto size-16" />
+        <h2 className="mt-3 text-2xl font-bold">{APP_NAME}</h2>
+        <p className="text-sm text-ink-500">Versión {APP_VERSION}</p>
+        <p className="mx-auto mt-3 max-w-sm text-sm text-ink-700">
+          Tu rutina de fuerza en casa con ligas: te dice qué toca hoy, cómo hacerlo y cuándo descansar. Sin presión.
+        </p>
+      </Card>
+
+      <Card as="section" className="p-5" aria-labelledby="privacy-title">
+        <h2 id="privacy-title" className="flex items-center gap-2 font-bold">
+          <ShieldCheck size={20} className="text-sage-700" aria-hidden="true" />
+          Privacidad
+        </h2>
+        <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-ink-700">
+          <li>No hay cuentas ni inicio de sesión.</li>
+          <li>Tus entrenamientos, notas y ajustes se guardan solo en este dispositivo.</li>
+          <li>La app no envía tus datos a ningún servidor ni usa analíticas.</li>
+        </ul>
+      </Card>
+
+      <Card as="section" className="p-5" aria-labelledby="credits-title">
+        <h2 id="credits-title" className="flex items-center gap-2 font-bold">
+          <Sprout size={20} className="text-sage-700" aria-hidden="true" />
+          Créditos
+        </h2>
+        <ul className="mt-3 space-y-1.5 text-sm text-ink-700">
+          <li>Íconos: Lucide (licencia ISC).</li>
+          <li>Tipografía: Plus Jakarta Sans (SIL Open Font License), incluida en la app.</li>
+          <li>Hecha con React, TypeScript, Vite y Tailwind CSS.</li>
+        </ul>
+      </Card>
+
+      <Card tone="peach" className="p-4 text-sm text-ink-700">
+        Esta app da orientación general de ejercicio y no sustituye la opinión de un profesional de la salud.
+      </Card>
+    </div>
+  )
+}
