@@ -24,6 +24,16 @@ npm run preview    # servir la compilación de producción localmente
 > comandos. Por eso los scripts de `package.json` llaman a Node directamente (`node node_modules/vite/bin/vite.js`)
 > en lugar de usar los atajos de `node_modules/.bin`. Usa siempre `npm run …`; `npx vite` o `npx tsc` fallan en esta carpeta.
 
+## Publicación en GitHub Pages
+
+La app se publica en **https://alexia-sv.github.io/Band-Bloom/**.
+
+- El workflow `.github/workflows/deploy.yml` corre en cada push a `main`: instala dependencias, ejecuta pruebas y lint, compila y publica `dist/`.
+- Requisito (una sola vez): en GitHub, *Settings → Pages → Source* debe estar en **GitHub Actions**.
+- `vite.config.ts` usa la ruta base `/Band-Bloom/` al compilar (`npm run build`) y en `npm run preview`; en `npm run dev` se usa la raíz.
+- Para referenciar archivos de `public/` desde el código usa `import.meta.env.BASE_URL` (por ejemplo, `${import.meta.env.BASE_URL}favicon.svg`), nunca una ruta que empiece con `/`.
+- Puedes ver el estado de cada despliegue en la pestaña *Actions* del repositorio.
+
 ## Stack
 
 | Pieza | Para qué |

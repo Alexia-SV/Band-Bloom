@@ -9,7 +9,8 @@ export function AboutScreen() {
       <ScreenHeader title="Sobre la app" backTo={{ name: 'more' }} />
 
       <Card tone="lavender" className="p-6 text-center">
-        <img src="/favicon.svg" alt="" className="mx-auto size-16" />
+        {/* BASE_URL es '/' en desarrollo y '/Band-Bloom/' en GitHub Pages. */}
+        <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="mx-auto size-16" />
         <h2 className="mt-3 text-2xl font-bold">{APP_NAME}</h2>
         <p className="text-sm text-ink-500">Versión {APP_VERSION}</p>
         <p className="mx-auto mt-3 max-w-sm text-sm text-ink-700">
