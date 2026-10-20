@@ -1,4 +1,4 @@
-import { CalendarDays, Dumbbell, Flower2, Moon, PartyPopper, Play, Sparkles, Timer, Undo2 } from 'lucide-react'
+import { CalendarDays, Flower2, Moon, Play, Timer, Undo2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { getExercise } from '../../data/exercises'
 import { getWarmUp } from '../../data/warmups'
@@ -7,6 +7,7 @@ import { getRoutine, routineTitle } from '../../data/routines'
 import { capitalize, parseISODate, WEEKDAY_NAME, weekdayKey } from '../../lib/dates'
 import type { DashboardSummary } from '../../lib/recommendation'
 import { routeHref } from '../../lib/router'
+import type { EmojiName } from '../../data/emoji'
 import type { Tone } from '../../types'
 import { LinkButton, SecondaryButton } from '../ui/Buttons'
 import { Card } from '../ui/Card'
@@ -36,13 +37,13 @@ function NextSessionLine({ next }: { next: DashboardSummary['nextSession'] }) {
 
 function Shell({
   tone,
-  icon,
+  emoji,
   eyebrow,
   title,
   children,
 }: {
   tone: Tone
-  icon: typeof Dumbbell
+  emoji: EmojiName
   eyebrow: string
   title: string
   children: ReactNode
@@ -50,7 +51,7 @@ function Shell({
   return (
     <Card as="section" tone={tone} className="p-5" aria-labelledby="today-title">
       <div className="flex items-start gap-4">
-        <IconBubble icon={icon} tone={tone} size="lg" />
+        <IconBubble emoji={emoji} tone={tone} size="lg" />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-ink-700">{eyebrow}</p>
           <h2 id="today-title" className="mt-0.5 text-xl font-bold leading-snug tracking-tight">
@@ -75,7 +76,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
       const first = routine.items[0]
       const warmUp = getWarmUp(routine.id)
       return (
-        <Shell tone={routine.tone} icon={rec.preferShort ? Timer : Dumbbell} eyebrow={eyebrow} title={routineTitle(routine)}>
+        <Shell tone={routine.tone} emoji={rec.preferShort ? 'stopwatch' : 'flexed-biceps'} eyebrow={eyebrow} title={routineTitle(routine)}>
           <p className="mt-3 text-sm text-ink-700">{routine.muscleGroups.join(' · ')}</p>
           {rec.preferShort && (
             <p className="mt-2 text-sm text-ink-700">
@@ -128,7 +129,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
 
     case 'done-today':
       return (
-        <Shell tone="sage" icon={Sparkles} eyebrow={eyebrow} title="¡Listo por hoy!">
+        <Shell tone="sage" emoji="sparkles" eyebrow={eyebrow} title="¡Listo por hoy!">
           <p className="mt-3 text-sm text-ink-700">
             Completaste <strong className="font-semibold">{routineTitle(getRoutine(rec.routineId))}</strong>. Si te
             apetece, una movilidad suave ayuda a soltar el cuerpo.
@@ -144,7 +145,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
 
     case 'rest-marked':
       return (
-        <Shell tone="lavender" icon={Moon} eyebrow={eyebrow} title="Hoy es día de descanso">
+        <Shell tone="lavender" emoji="crescent-moon" eyebrow={eyebrow} title="Hoy es día de descanso">
           <p className="mt-3 text-sm text-ink-700">
             Descansar también es entrenar: así es como el músculo se recupera y se fortalece.
           </p>
@@ -157,7 +158,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
 
     case 'weekly-goal-met':
       return (
-        <Shell tone="sage" icon={PartyPopper} eyebrow={eyebrow} title="¡Semana de fuerza completa!">
+        <Shell tone="sage" emoji="party-popper" eyebrow={eyebrow} title="¡Semana de fuerza completa!">
           <p className="mt-3 text-sm text-ink-700">
             Ya hiciste tus {summary.weeklyGoal} sesiones. Hoy puedes descansar o hacer movilidad suave.
           </p>
@@ -170,7 +171,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
 
     case 'light-day':
       return (
-        <Shell tone="sage" icon={Flower2} eyebrow={eyebrow} title="Día ligero">
+        <Shell tone="sage" emoji="seedling" eyebrow={eyebrow} title="Día ligero">
           <p className="mt-3 text-sm text-ink-700">
             {summary.mobilityDoneToday
               ? 'Ya hiciste tu movilidad de hoy. ¡Bien hecho!'
@@ -192,7 +193,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
 
     case 'rest-day':
       return (
-        <Shell tone="lavender" icon={Moon} eyebrow={eyebrow} title="Hoy toca descanso">
+        <Shell tone="lavender" emoji="crescent-moon" eyebrow={eyebrow} title="Hoy toca descanso">
           <p className="mt-3 text-sm text-ink-700">Recarga energía. Tu cuerpo también se fortalece mientras descansa.</p>
           {!summary.mobilityDoneToday && (
             <LinkButton href={MOBILITY_HREF} variant="secondary" icon={Flower2} className="mt-3 -ml-4">

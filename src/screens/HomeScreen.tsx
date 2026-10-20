@@ -1,4 +1,4 @@
-import { Heart, Quote, Sprout } from 'lucide-react'
+import { Quote } from 'lucide-react'
 import { useMemo } from 'react'
 import { QuickAccess } from '../components/home/QuickAccess'
 import { ReminderBanner } from '../components/home/ReminderBanner'
@@ -6,6 +6,7 @@ import { TodayCard } from '../components/home/TodayCard'
 import { WeeklyProgressCard } from '../components/home/WeeklyProgressCard'
 import { WeekStrip } from '../components/home/WeekStrip'
 import { Card } from '../components/ui/Card'
+import { Emoji } from '../components/ui/Emoji'
 import { messageForDate } from '../data/messages'
 import { formatLongDate, parseISODate, toISODate } from '../lib/dates'
 import { buildDashboard } from '../lib/recommendation'
@@ -27,11 +28,11 @@ export function HomeScreen() {
       <header>
         <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
           Hola{name ? `, ${name}` : ''}
-          <Heart size={24} className="fill-rose-400 text-rose-400" aria-hidden="true" />
+          <Emoji name="pink-heart" size={28} />
         </h1>
         <p className="mt-1 flex items-center gap-1.5 text-ink-500">
           Tu espacio para sentirte fuerte
-          <Sprout size={18} className="text-sage-600" aria-hidden="true" />
+          <Emoji name="seedling" size={20} />
         </p>
         <p className="mt-0.5 text-sm font-medium text-ink-700">{formatLongDate(day)}</p>
       </header>

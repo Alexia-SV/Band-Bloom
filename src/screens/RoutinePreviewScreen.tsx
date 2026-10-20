@@ -1,9 +1,11 @@
-import { ArrowLeft, Flame, Info, Timer } from 'lucide-react'
+import { ArrowLeft, Info, Timer } from 'lucide-react'
 import { ExerciseListItem } from '../components/exercise/ExerciseListItem'
-import { ROUTINE_ICONS } from '../components/routineIcons'
+import { ROUTINE_EMOJI } from '../components/routineIcons'
+import { Emoji } from '../components/ui/Emoji'
 import { Card } from '../components/ui/Card'
 import { FavoriteButton } from '../components/ui/FavoriteButton'
 import { IconBubble } from '../components/ui/IconBubble'
+import { ROUTINE_COVERS } from '../data/covers'
 import { getRoutine, routineTitle } from '../data/routines'
 import { getWarmUp } from '../data/warmups'
 import { goBack, routeHref } from '../lib/router'
@@ -13,6 +15,7 @@ import type { RoutineId } from '../types'
 export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
   const routine = getRoutine(routineId)
   const warmUp = getWarmUp(routineId)
+  const cover = ROUTINE_COVERS[routineId]
 
   return (
     <div className="space-y-5">
@@ -28,8 +31,18 @@ export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
         <FavoriteButton routineId={routine.id} />
       </div>
 
+      <figure className="overflow-hidden rounded-card shadow-soft">
+        <img
+          src={cover.src}
+          alt={cover.alt}
+          decoding="async"
+          className="h-44 w-full object-cover sm:h-56"
+          style={{ objectPosition: cover.position }}
+        />
+      </figure>
+
       <header className="flex items-start gap-4">
-        <IconBubble icon={ROUTINE_ICONS[routine.kind]} tone={routine.tone} size="lg" />
+        <IconBubble emoji={ROUTINE_EMOJI[routine.kind]} tone={routine.tone} size="lg" />
         <div>
           <h1 className="text-2xl font-bold tracking-tight md:text-3xl">{routineTitle(routine)}</h1>
           <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-ink-500">
@@ -55,7 +68,7 @@ export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
         <section aria-labelledby="warmup-title" className="space-y-3">
           <div>
             <h2 id="warmup-title" className="flex items-center gap-2 text-lg font-bold">
-              <Flame size={20} className="text-peach-700" aria-hidden="true" />
+              <Emoji name="fire" size={24} />
               Calentamiento · {warmUp.durationLabel}
             </h2>
             <p className="mt-1 text-sm text-ink-500">

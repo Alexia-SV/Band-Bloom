@@ -1,4 +1,4 @@
-import { CalendarCheck, ChevronLeft, ChevronRight, Clock, Dumbbell, Flower2, Moon, Star, Timer } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useId, useMemo, useState } from 'react'
 import { ActivityLegend } from '../components/progress/ActivityMarker'
 import { ActivityCalendar } from '../components/progress/ActivityCalendar'
@@ -6,6 +6,7 @@ import { ConsistencyChart } from '../components/progress/ConsistencyChart'
 import { SessionHistory } from '../components/progress/SessionHistory'
 import { StatCard } from '../components/progress/StatCard'
 import { Card } from '../components/ui/Card'
+import { Emoji } from '../components/ui/Emoji'
 import { ScreenHeader } from '../components/ui/ScreenHeader'
 import { SegmentedTabs } from '../components/ui/SegmentedTabs'
 import { addDays, capitalize, parseISODate, startOfWeek, toISODate, weekDates } from '../lib/dates'
@@ -35,7 +36,7 @@ function monthLabel(year: number, month: number): string {
 function Encouragement() {
   return (
     <Card tone="peach" className="flex items-start gap-3 p-4">
-      <Star size={22} className="mt-0.5 shrink-0 fill-peach-500 text-peach-500" aria-hidden="true" />
+      <Emoji name="glowing-star" size={30} />
       <p className="text-sm text-ink-700">
         <strong className="block text-ink-900">¡Vas muy bien!</strong>
         La constancia también se construye con pasos pequeños. 💜
@@ -90,13 +91,13 @@ export function ProgressScreen() {
 
             <div className="grid grid-cols-2 gap-3">
               <StatCard
-                icon={Dumbbell}
+                emoji="flexed-biceps"
                 tone="lavender"
                 value={`${week.strength + week.short}/${goal}`}
                 label="Rutinas de fuerza"
               />
               <StatCard
-                icon={Flower2}
+                emoji="seedling"
                 tone="sage"
                 value={String(week.mobility)}
                 label="Sesiones de movilidad"
@@ -149,10 +150,10 @@ export function ProgressScreen() {
             </Card>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <StatCard icon={Dumbbell} tone="lavender" value={String(month.strength)} label="Rutinas A, B o C" />
-              <StatCard icon={Timer} tone="rose" value={String(month.short)} label="Rutinas cortas" />
-              <StatCard icon={Flower2} tone="sage" value={String(month.mobility)} label="Movilidad" />
-              <StatCard icon={Moon} tone="lavender" value={String(month.restDays)} label="Descansos marcados" />
+              <StatCard emoji="flexed-biceps" tone="lavender" value={String(month.strength)} label="Rutinas A, B o C" />
+              <StatCard emoji="stopwatch" tone="rose" value={String(month.short)} label="Rutinas cortas" />
+              <StatCard emoji="seedling" tone="sage" value={String(month.mobility)} label="Movilidad" />
+              <StatCard emoji="crescent-moon" tone="lavender" value={String(month.restDays)} label="Descansos marcados" />
             </div>
 
             <SessionHistory
@@ -165,11 +166,11 @@ export function ProgressScreen() {
         {view === 'total' && (
           <>
             <div className="grid grid-cols-2 gap-3">
-              <StatCard icon={Dumbbell} tone="lavender" value={String(total.strength + total.short)} label="Sesiones de fuerza" />
-              <StatCard icon={Flower2} tone="sage" value={String(total.mobility)} label="Sesiones de movilidad" />
-              <StatCard icon={Clock} tone="peach" value={`${total.minutes}`} label="Minutos en movimiento" />
+              <StatCard emoji="flexed-biceps" tone="lavender" value={String(total.strength + total.short)} label="Sesiones de fuerza" />
+              <StatCard emoji="seedling" tone="sage" value={String(total.mobility)} label="Sesiones de movilidad" />
+              <StatCard emoji="hourglass-not-done" tone="peach" value={`${total.minutes}`} label="Minutos en movimiento" />
               <StatCard
-                icon={CalendarCheck}
+                emoji="calendar"
                 tone="sky"
                 value={
                   firstSession

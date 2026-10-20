@@ -1,4 +1,3 @@
-import { ClipboardList } from 'lucide-react'
 import { getRoutine, routineTitle } from '../../data/routines'
 import { parseISODate } from '../../lib/dates'
 import { sessionKind, sessionMinutes } from '../../lib/progress'
@@ -25,7 +24,7 @@ export function SessionHistory({ sessions, emptyText }: SessionHistoryProps) {
         Historial
       </h2>
       {sessions.length === 0 ? (
-        <EmptyState icon={ClipboardList} title="Sin entrenamientos aquí">
+        <EmptyState emoji="spiral-notepad" title="Sin entrenamientos aquí">
           {emptyText}
         </EmptyState>
       ) : (

@@ -1,4 +1,3 @@
-import { Heart } from 'lucide-react'
 import { useId, useMemo, useState } from 'react'
 import { RoutineCard } from '../components/routines/RoutineCard'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -67,7 +66,7 @@ export function RoutinesScreen() {
           (favorites.length > 0 ? (
             favorites.map((routine) => <RoutineCard key={routine.id} routine={routine} />)
           ) : (
-            <EmptyState icon={Heart} tone="rose" title="Aún no tienes favoritas">
+            <EmptyState emoji="pink-heart" tone="rose" title="Aún no tienes favoritas">
               Toca el corazón de cualquier rutina para tenerla a la mano aquí.
             </EmptyState>
           ))}

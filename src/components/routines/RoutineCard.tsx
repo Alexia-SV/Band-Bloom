@@ -2,8 +2,9 @@ import { ChevronRight, CircleCheck, Timer } from 'lucide-react'
 import { routeHref } from '../../lib/router'
 import { cn, TONE_STYLES } from '../../lib/tones'
 import type { Routine } from '../../types'
+import { ROUTINE_COVERS } from '../../data/covers'
 import { routineTitle } from '../../data/routines'
-import { ROUTINE_ICONS } from '../routineIcons'
+import { ROUTINE_EMOJI } from '../routineIcons'
 import { FavoriteButton } from '../ui/FavoriteButton'
 import { IconBubble } from '../ui/IconBubble'
 
@@ -21,16 +22,28 @@ interface RoutineCardProps {
  */
 export function RoutineCard({ routine, eyebrow, doneThisWeek = false }: RoutineCardProps) {
   const tone = TONE_STYLES[routine.tone]
+  const cover = ROUTINE_COVERS[routine.id]
+  // La foto se desvanece hacia la izquierda para fundirse con el color de la tarjeta (como en el mockup).
+  const fade = 'linear-gradient(to left, black 45%, transparent 100%)'
   return (
     <article
       className={cn(
-        'relative rounded-card p-5 shadow-soft ring-1 transition hover:-translate-y-0.5 has-[a:focus-visible]:ring-3 has-[a:focus-visible]:ring-bloom-500',
+        'relative overflow-hidden rounded-card p-5 shadow-soft ring-1 transition hover:-translate-y-0.5 has-[a:focus-visible]:ring-3 has-[a:focus-visible]:ring-bloom-500',
         tone.card,
       )}
     >
-      <div className="flex items-start gap-4">
-        <IconBubble icon={ROUTINE_ICONS[routine.kind]} tone={routine.tone} size="lg" />
-        <div className="min-w-0 flex-1 pr-10">
+      <img
+        src={cover.src}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        className="pointer-events-none absolute inset-y-0 right-0 h-full w-[36%] object-cover"
+        style={{ objectPosition: cover.position, maskImage: fade, WebkitMaskImage: fade }}
+      />
+      <div className="relative flex items-start gap-3 pr-[30%]">
+        <IconBubble emoji={ROUTINE_EMOJI[routine.kind]} tone={routine.tone} size="sm" />
+        <div className="min-w-0 flex-1">
           {(eyebrow || doneThisWeek) && (
             <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-ink-700">
               {eyebrow}
@@ -56,7 +69,7 @@ export function RoutineCard({ routine, eyebrow, doneThisWeek = false }: RoutineC
         </div>
       </div>
 
-      <dl className="mt-4 grid gap-1 text-sm">
+      <dl className="relative mt-4 grid gap-1 pr-[30%] text-sm">
         <div className="flex gap-2">
           <dt className="shrink-0 font-semibold text-ink-700">Trabaja:</dt>
           <dd className="text-ink-700">{routine.muscleGroups.join(', ')}</dd>
@@ -67,7 +80,7 @@ export function RoutineCard({ routine, eyebrow, doneThisWeek = false }: RoutineC
         </div>
       </dl>
 
-      <p className={cn('mt-4 flex items-center gap-1 text-sm font-semibold', tone.text)} aria-hidden="true">
+      <p className={cn('relative mt-4 flex items-center gap-1 text-sm font-semibold', tone.text)} aria-hidden="true">
         Ver rutina <ChevronRight size={16} />
       </p>
 

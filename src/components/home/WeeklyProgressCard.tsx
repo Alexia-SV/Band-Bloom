@@ -1,4 +1,3 @@
-import { Sprout } from 'lucide-react'
 import { Card } from '../ui/Card'
 import { IconBubble } from '../ui/IconBubble'
 import { ProgressBar } from '../ui/ProgressBar'
@@ -24,7 +23,7 @@ export function WeeklyProgressCard({ done, goal }: { done: number; goal: number 
             <span className="text-sm text-ink-500">sesiones de fuerza</span>
           </p>
         </div>
-        <IconBubble icon={Sprout} tone="sage" />
+        <IconBubble emoji="seedling" tone="sage" />
       </div>
       <div className="mt-3">
         <ProgressBar value={done} max={goal} label={`${done} de ${goal} sesiones de fuerza esta semana`} />

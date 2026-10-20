@@ -44,6 +44,12 @@ Las imágenes son **dibujos originales en SVG** generados por código, sin fotos
 - Cada figura lleva top deportivo, leggings, tenis, cabello y sombra; en las miniaturas se ve una silueta clara de la postura inicial para entender el movimiento.
 - En desarrollo puedes ver todas juntas en `http://localhost:5173/#/dev/ilustraciones` (no existe en la versión publicada).
 
+## Íconos y fotos
+
+- **Emoji 3D:** [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji) (licencia MIT, copia en `src/assets/emoji/LICENSE-fluent-emoji.txt`). Reducidos a 128 px en WebP (~75 KB en total) y declarados en `src/data/emoji.ts`.
+- **Fotos de portada:** 5 fotos de [Pexels](https://www.pexels.com/license/) (uso gratuito, sin atribución obligatoria; igual damos crédito en *Sobre la app*). Están en `src/assets/covers/` como WebP (~205 KB en total) y sus autores y enlaces en `src/data/covers.ts`.
+- Todo se incluye en la app (no se carga de internet), así funcionará sin conexión cuando la PWA esté lista.
+
 ## Temporizador de ejercicios
 
 - `src/lib/timer.ts` convierte el objetivo escrito en fases exactas: "30 s por lado" → 2 × 30 s; "15 s por dirección, cada pie" → 4 × 15 s; "20 s atrás + 20 s adelante" → 2 fases.

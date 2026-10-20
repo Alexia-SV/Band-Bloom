@@ -1,4 +1,4 @@
-import { NotebookPen, Plus, Trash } from 'lucide-react'
+import { Plus, Trash } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Card } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
@@ -61,7 +61,7 @@ export function NotesScreen() {
       </Card>
 
       {data.notes.length === 0 ? (
-        <EmptyState icon={NotebookPen} tone="peach" title="Aún no tienes notas">
+        <EmptyState emoji="spiral-notepad" tone="peach" title="Aún no tienes notas">
           Tus notas se guardan solo en este dispositivo.
         </EmptyState>
       ) : (

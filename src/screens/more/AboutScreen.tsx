@@ -2,6 +2,8 @@ import { ShieldCheck, Sprout } from 'lucide-react'
 import { Card } from '../../components/ui/Card'
 import { ScreenHeader } from '../../components/ui/ScreenHeader'
 import { APP_NAME, APP_VERSION } from '../../data/app'
+import { ROUTINE_COVERS } from '../../data/covers'
+import { ROUTINES, routineTitle } from '../../data/routines'
 
 export function AboutScreen() {
   return (
@@ -36,9 +38,25 @@ export function AboutScreen() {
           Créditos
         </h2>
         <ul className="mt-3 space-y-1.5 text-sm text-ink-700">
-          <li>Íconos: Lucide (licencia ISC).</li>
+          <li>Emoji 3D: Microsoft Fluent Emoji (licencia MIT, © Microsoft Corporation).</li>
+          <li>Íconos de línea: Lucide (licencia ISC).</li>
+          <li>Ilustraciones de ejercicios: dibujos originales de Band &amp; Bloom.</li>
           <li>Tipografía: Plus Jakarta Sans (SIL Open Font License), incluida en la app.</li>
           <li>Hecha con React, TypeScript, Vite y Tailwind CSS.</li>
+        </ul>
+        <h3 className="mt-4 text-sm font-semibold text-ink-900">Fotos de portada (Pexels)</h3>
+        <ul className="mt-1.5 space-y-1 text-sm text-ink-700">
+          {ROUTINES.map((routine) => {
+            const cover = ROUTINE_COVERS[routine.id]
+            return (
+              <li key={routine.id}>
+                {routineTitle(routine)}:{' '}
+                <a href={cover.sourceUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-bloom-700 underline underline-offset-2">
+                  {cover.photographer}
+                </a>
+              </li>
+            )
+          })}
         </ul>
       </Card>
 

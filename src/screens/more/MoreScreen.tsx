@@ -1,27 +1,16 @@
-import {
-  Bell,
-  CalendarDays,
-  CircleQuestionMark,
-  Database,
-  Heart,
-  Infinity as BandIcon,
-  Lightbulb,
-  NotebookPen,
-  Settings,
-  SlidersHorizontal,
-  type LucideIcon,
-} from 'lucide-react'
+import { Settings } from 'lucide-react'
 import { ListRow } from '../../components/ui/ListRow'
 import { ScreenHeader } from '../../components/ui/ScreenHeader'
 import { routeHref, type MoreSection } from '../../lib/router'
 import { useAppData } from '../../state/useAppData'
+import type { EmojiName } from '../../data/emoji'
 import type { Tone } from '../../types'
 import { APP_VERSION } from '../../data/app'
 import { formatTime } from '../../lib/reminders'
 
 interface Row {
   section: MoreSection
-  icon: LucideIcon
+  emoji: EmojiName
   tone: Tone
   title: string
   subtitle: string
@@ -35,31 +24,31 @@ export function MoreScreen() {
     {
       title: 'Mi entrenamiento',
       rows: [
-        { section: 'ligas', icon: BandIcon, tone: 'rose', title: 'Mis ligas', subtitle: 'Rosa (Light) · Morada (X-Heavy)' },
+        { section: 'ligas', emoji: 'flexed-biceps', tone: 'rose', title: 'Mis ligas', subtitle: 'Rosa (Light) · Morada (X-Heavy)' },
         {
           section: 'horario',
-          icon: CalendarDays,
+          emoji: 'calendar',
           tone: 'lavender',
           title: 'Horario de entrenamiento',
           subtitle: `${strengthDays} días de fuerza por semana`,
         },
         {
           section: 'preferencias',
-          icon: SlidersHorizontal,
+          emoji: 'gear',
           tone: 'sky',
           title: 'Preferencias',
           subtitle: data.preferences.preferredSession === 'short' ? 'Sesiones de 10 min' : 'Sesiones de 15–25 min',
         },
         {
           section: 'recordatorios',
-          icon: Bell,
+          emoji: 'bell',
           tone: 'lavender',
           title: 'Recordatorios',
           subtitle: data.reminders.enabled ? `${formatTime(data.reminders.time)} · dentro de la app` : 'Desactivados',
         },
         {
           section: 'notas',
-          icon: NotebookPen,
+          emoji: 'spiral-notepad',
           tone: 'peach',
           title: 'Notas personales',
           subtitle: data.notes.length ? `${data.notes.length} ${data.notes.length === 1 ? 'nota' : 'notas'}` : 'Cómo me siento, observaciones…',
@@ -69,15 +58,15 @@ export function MoreScreen() {
     {
       title: 'Aprender',
       rows: [
-        { section: 'consejos', icon: Lightbulb, tone: 'peach', title: 'Consejos', subtitle: 'Técnica, descanso, progreso' },
-        { section: 'preguntas', icon: CircleQuestionMark, tone: 'sky', title: 'Preguntas frecuentes', subtitle: 'Dudas comunes' },
+        { section: 'consejos', emoji: 'light-bulb', tone: 'peach', title: 'Consejos', subtitle: 'Técnica, descanso, progreso' },
+        { section: 'preguntas', emoji: 'red-question-mark', tone: 'sky', title: 'Preguntas frecuentes', subtitle: 'Dudas comunes' },
       ],
     },
     {
       title: 'App',
       rows: [
-        { section: 'datos', icon: Database, tone: 'sage', title: 'Mis datos', subtitle: 'Exportar o borrar' },
-        { section: 'acerca', icon: Heart, tone: 'rose', title: 'Sobre la app', subtitle: `Versión ${APP_VERSION}` },
+        { section: 'datos', emoji: 'floppy-disk', tone: 'sage', title: 'Mis datos', subtitle: 'Exportar o borrar' },
+        { section: 'acerca', emoji: 'purple-heart', tone: 'rose', title: 'Sobre la app', subtitle: `Versión ${APP_VERSION}` },
       ],
     },
   ]
@@ -106,7 +95,7 @@ export function MoreScreen() {
               <li key={row.section}>
                 <ListRow
                   href={routeHref({ name: 'more-section', section: row.section })}
-                  icon={row.icon}
+                  emoji={row.emoji}
                   tone={row.tone}
                   title={row.title}
                   subtitle={row.subtitle}

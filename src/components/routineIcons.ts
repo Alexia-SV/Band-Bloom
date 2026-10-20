@@ -1,8 +1,9 @@
-import { Dumbbell, Flower2, Timer, type LucideIcon } from 'lucide-react'
+import type { EmojiName } from '../data/emoji'
 import type { RoutineKind } from '../types'
 
-export const ROUTINE_ICONS: Record<RoutineKind, LucideIcon> = {
-  strength: Dumbbell,
-  short: Timer,
-  mobility: Flower2,
+/** Emoji 3D que identifica cada tipo de rutina. */
+export const ROUTINE_EMOJI: Record<RoutineKind, EmojiName> = {
+  strength: 'flexed-biceps',
+  short: 'stopwatch',
+  mobility: 'person-in-lotus-position',
 }
