@@ -1,6 +1,7 @@
 import { Heart, Quote, Sprout } from 'lucide-react'
 import { useMemo } from 'react'
 import { QuickAccess } from '../components/home/QuickAccess'
+import { ReminderBanner } from '../components/home/ReminderBanner'
 import { TodayCard } from '../components/home/TodayCard'
 import { WeeklyProgressCard } from '../components/home/WeeklyProgressCard'
 import { WeekStrip } from '../components/home/WeekStrip'
@@ -22,6 +23,7 @@ export function HomeScreen() {
 
   return (
     <div className="space-y-5">
+      <ReminderBanner />
       <header>
         <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
           Hola{name ? `, ${name}` : ''}

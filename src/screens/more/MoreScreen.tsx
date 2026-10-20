@@ -17,6 +17,7 @@ import { routeHref, type MoreSection } from '../../lib/router'
 import { useAppData } from '../../state/useAppData'
 import type { Tone } from '../../types'
 import { APP_VERSION } from '../../data/app'
+import { formatTime } from '../../lib/reminders'
 
 interface Row {
   section: MoreSection
@@ -49,7 +50,13 @@ export function MoreScreen() {
           title: 'Preferencias',
           subtitle: data.preferences.preferredSession === 'short' ? 'Sesiones de 10 min' : 'Sesiones de 15–25 min',
         },
-        { section: 'recordatorios', icon: Bell, tone: 'lavender', title: 'Recordatorios', subtitle: 'Próximamente' },
+        {
+          section: 'recordatorios',
+          icon: Bell,
+          tone: 'lavender',
+          title: 'Recordatorios',
+          subtitle: data.reminders.enabled ? `${formatTime(data.reminders.time)} · dentro de la app` : 'Desactivados',
+        },
         {
           section: 'notas',
           icon: NotebookPen,

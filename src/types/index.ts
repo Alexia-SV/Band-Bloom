@@ -18,11 +18,29 @@ export type PlanSlot =
 
 export type WeeklyPlan = Record<WeekdayKey, PlanSlot>
 
-/** Versión mínima del ejercicio. En la Etapa 3 se agregan instrucciones, seguridad, variaciones, etc. */
+export type ExerciseKind = 'strength' | 'mobility' | 'warmup'
+
 export interface Exercise {
   id: string
   name: string
   nameEn?: string
+  kind: ExerciseKind
+  /** Qué es y para qué sirve, en una o dos frases. */
+  description: string
+  muscles: string[]
+  equipment: string[]
+  /** Qué liga usar (o "Sin liga"). */
+  band: string
+  startingSets: number
+  /** Repeticiones o duración: "8–12", "30 s por lado"… */
+  target: string
+  rest?: string
+  steps: string[]
+  safety: string[]
+  mistakes: string[]
+  easier: string
+  progression: string
+  beginnerFriendly: boolean
 }
 
 export interface RoutineItem {
@@ -73,6 +91,29 @@ export interface UserPreferences {
   plan: WeeklyPlan
   preferredSession: PreferredSession
   favoriteRoutineIds: RoutineId[]
+  /** false hasta terminar (o saltar) la configuración inicial. */
+  onboardingCompleted: boolean
+  /** Plan para principiantes: las primeras dos semanas se priorizan técnica y 1–2 series. */
+  beginnerPlan: boolean
+  /** Día en que empezó el plan para principiantes (para saber cuándo terminan las dos semanas). */
+  beginnerPlanStartedOn?: ISODate
+}
+
+export type ReminderMessageId = 'care' | 'small-step' | 'energy' | 'custom'
+
+/** Hora local en formato 'HH:MM' (24 horas). */
+export type TimeOfDay = string
+
+export interface ReminderSettings {
+  /** Aviso dentro de la app al abrirla después de la hora elegida. */
+  enabled: boolean
+  time: TimeOfDay
+  messageId: ReminderMessageId
+  customMessage: string
+  /** Días en que aplica el recordatorio. */
+  days: WeekdayKey[]
+  /** Último día en que se cerró el aviso con "Ahora no". */
+  lastDismissedOn?: ISODate
 }
 
 export interface PersonalNote {
@@ -88,4 +129,5 @@ export interface AppData {
   /** Días que la persona marcó como descanso. */
   restDays: ISODate[]
   notes: PersonalNote[]
+  reminders: ReminderSettings
 }

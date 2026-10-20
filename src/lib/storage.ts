@@ -1,6 +1,17 @@
+import { CUSTOM_MESSAGE_MAX_LENGTH, DEFAULT_REMINDERS } from '../data/reminders'
 import { isRoutineId } from '../data/routines'
 import { DEFAULT_WEEKLY_PLAN, DEFAULT_WEEKLY_STRENGTH_GOAL } from '../data/weeklyPlan'
-import type { AppData, PersonalNote, PlanSlot, RoutineId, UserPreferences, WeeklyPlan, WorkoutSession } from '../types'
+import type {
+  AppData,
+  PersonalNote,
+  PlanSlot,
+  ReminderSettings,
+  RoutineId,
+  UserPreferences,
+  WeekdayKey,
+  WeeklyPlan,
+  WorkoutSession,
+} from '../types'
 import { isISODate, WEEK_ORDER } from './dates'
 
 export const STORAGE_KEY = 'band-and-bloom:data'
@@ -21,10 +32,13 @@ export function createDefaultAppData(): AppData {
       plan: { ...DEFAULT_WEEKLY_PLAN },
       preferredSession: 'full',
       favoriteRoutineIds: [],
+      onboardingCompleted: false,
+      beginnerPlan: true,
     },
     sessions: [],
     restDays: [],
     notes: [],
+    reminders: { ...DEFAULT_REMINDERS, days: [...DEFAULT_REMINDERS.days] },
   }
 }
 
@@ -54,7 +68,31 @@ function sanitizeSlot(value: unknown): PlanSlot | null {
   return null
 }
 
-function sanitizePreferences(value: unknown): UserPreferences {
+const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/
+
+export function isTimeOfDay(value: unknown): value is string {
+  return typeof value === 'string' && TIME_PATTERN.test(value)
+}
+
+function sanitizeReminders(value: unknown): ReminderSettings {
+  const defaults = createDefaultAppData().reminders
+  if (!isRecord(value)) return defaults
+  const messageIds = ['care', 'small-step', 'energy', 'custom'] as const
+  const days = Array.isArray(value.days)
+    ? WEEK_ORDER.filter((day) => (value.days as unknown[]).includes(day))
+    : defaults.days
+  return {
+    enabled: typeof value.enabled === 'boolean' ? value.enabled : defaults.enabled,
+    time: isTimeOfDay(value.time) ? value.time : defaults.time,
+    messageId: messageIds.find((id) => id === value.messageId) ?? defaults.messageId,
+    customMessage:
+      typeof value.customMessage === 'string' ? value.customMessage.slice(0, CUSTOM_MESSAGE_MAX_LENGTH) : '',
+    days: days as WeekdayKey[],
+    ...(isISODate(value.lastDismissedOn) ? { lastDismissedOn: value.lastDismissedOn } : {}),
+  }
+}
+
+function sanitizePreferences(value: unknown, hasHistory: boolean): UserPreferences {
   const defaults = createDefaultAppData().preferences
   if (!isRecord(value)) return defaults
 
@@ -76,6 +114,10 @@ function sanitizePreferences(value: unknown): UserPreferences {
     plan,
     preferredSession: value.preferredSession === 'short' ? 'short' : 'full',
     favoriteRoutineIds: [...new Set(favorites)],
+    // Datos guardados antes de existir el onboarding: si ya hay historial, no lo volvemos a pedir.
+    onboardingCompleted: typeof value.onboardingCompleted === 'boolean' ? value.onboardingCompleted : hasHistory,
+    beginnerPlan: typeof value.beginnerPlan === 'boolean' ? value.beginnerPlan : defaults.beginnerPlan,
+    ...(isISODate(value.beginnerPlanStartedOn) ? { beginnerPlanStartedOn: value.beginnerPlanStartedOn } : {}),
   }
 }
 
@@ -125,7 +167,14 @@ export function sanitizeAppData(value: unknown): AppData | null {
   const notes = Array.isArray(value.notes)
     ? value.notes.map(sanitizeNote).filter((n): n is PersonalNote => n !== null)
     : []
-  return { version: 1, preferences: sanitizePreferences(value.preferences), sessions, restDays, notes }
+  return {
+    version: 1,
+    preferences: sanitizePreferences(value.preferences, sessions.length > 0),
+    sessions,
+    restDays,
+    notes,
+    reminders: sanitizeReminders(value.reminders),
+  }
 }
 
 export function loadAppData(): LoadResult {

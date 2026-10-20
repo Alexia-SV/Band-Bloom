@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
-import { isRoutineId } from '../data/routines'
+import { getRoutine, isRoutineId } from '../data/routines'
+import { getWarmUp } from '../data/warmups'
 import type { RoutineId } from '../types'
 
 /** Subpantallas de "Más". La clave es el segmento de la URL (#/mas/ligas). */
@@ -31,15 +32,32 @@ export type Route =
   | { name: 'more' }
   | { name: 'routine'; id: RoutineId }
   | { name: 'more-section'; section: MoreSection }
+  /** Detalle de un ejercicio dentro de una rutina. `index` empieza en 0. */
+  | { name: 'exercise'; routineId: RoutineId; part: ExercisePart; index: number }
+
+export type ExercisePart = 'warmup' | 'main'
+
+/** Cuántos ejercicios tiene cada parte de una rutina. */
+export function partLength(routineId: RoutineId, part: ExercisePart): number {
+  return part === 'warmup' ? (getWarmUp(routineId)?.items.length ?? 0) : getRoutine(routineId).items.length
+}
 
 export function parseHash(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean)
   switch (parts[0]) {
     case undefined:
       return { name: 'home' }
-    case 'rutinas':
-      if (parts[1] && isRoutineId(parts[1])) return { name: 'routine', id: parts[1] }
-      return { name: 'routines' }
+    case 'rutinas': {
+      if (!parts[1] || !isRoutineId(parts[1])) return { name: 'routines' }
+      const routineId = parts[1]
+      const part: ExercisePart | null =
+        parts[2] === 'ejercicio' ? 'main' : parts[2] === 'calentamiento' ? 'warmup' : null
+      const index = Number(parts[3]) - 1
+      if (part && Number.isInteger(index) && index >= 0 && index < partLength(routineId, part)) {
+        return { name: 'exercise', routineId, part, index }
+      }
+      return { name: 'routine', id: routineId }
+    }
     case 'progreso':
       return { name: 'progress' }
     case 'mas':
@@ -64,6 +82,8 @@ export function routeHref(route: Route): string {
       return '#/mas'
     case 'more-section':
       return `#/mas/${route.section}`
+    case 'exercise':
+      return `#/rutinas/${route.routineId}/${route.part === 'main' ? 'ejercicio' : 'calentamiento'}/${route.index + 1}`
   }
 }
 

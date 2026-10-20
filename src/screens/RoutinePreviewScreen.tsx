@@ -1,18 +1,18 @@
-import { ArrowLeft, Info, Timer } from 'lucide-react'
+import { ArrowLeft, Flame, Info, Timer } from 'lucide-react'
+import { ExerciseListItem } from '../components/exercise/ExerciseListItem'
 import { ROUTINE_ICONS } from '../components/routineIcons'
 import { Card } from '../components/ui/Card'
 import { FavoriteButton } from '../components/ui/FavoriteButton'
 import { IconBubble } from '../components/ui/IconBubble'
-import { getExercise } from '../data/exercises'
 import { getRoutine, routineTitle } from '../data/routines'
-import { goBack } from '../lib/router'
-import { TONE_STYLES } from '../lib/tones'
+import { getWarmUp } from '../data/warmups'
+import { goBack, routeHref } from '../lib/router'
 import type { RoutineId } from '../types'
 
-/** Vista previa de la rutina. En las Etapas 3 y 4 se convierte en el detalle completo con modo entrenamiento. */
+/** Detalle de la rutina: calentamiento + ejercicios, cada uno con imagen y enlace a su explicación. */
 export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
   const routine = getRoutine(routineId)
-  const tone = TONE_STYLES[routine.tone]
+  const warmUp = getWarmUp(routineId)
 
   return (
     <div className="space-y-5">
@@ -32,9 +32,10 @@ export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
         <IconBubble icon={ROUTINE_ICONS[routine.kind]} tone={routine.tone} size="lg" />
         <div>
           <h1 className="text-2xl font-bold tracking-tight md:text-3xl">{routineTitle(routine)}</h1>
-          <p className="mt-1 flex items-center gap-1.5 text-ink-500">
+          <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-ink-500">
             <Timer size={16} aria-hidden="true" />
             {routine.durationLabel} · {routine.items.length} ejercicios
+            {warmUp && <span>+ {warmUp.durationLabel} de calentamiento</span>}
           </p>
         </div>
       </header>
@@ -50,36 +51,67 @@ export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
         </Card>
       </dl>
 
-      <section aria-labelledby="exercise-list-title">
-        <h2 id="exercise-list-title" className="mb-3 text-lg font-bold">
+      {warmUp && (
+        <section aria-labelledby="warmup-title" className="space-y-3">
+          <div>
+            <h2 id="warmup-title" className="flex items-center gap-2 text-lg font-bold">
+              <Flame size={20} className="text-peach-700" aria-hidden="true" />
+              Calentamiento · {warmUp.durationLabel}
+            </h2>
+            <p className="mt-1 text-sm text-ink-500">
+              {warmUp.focus} Movimientos suaves y controlados: no se trata de cansarte.
+            </p>
+          </div>
+          <ol className="space-y-2.5">
+            {warmUp.items.map((item, index) => (
+              <li key={item.exerciseId}>
+                <ExerciseListItem
+                  href={routeHref({ name: 'exercise', routineId, part: 'warmup', index })}
+                  exerciseId={item.exerciseId}
+                  number={index + 1}
+                  detail={item.target}
+                  tone="sage"
+                />
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <section aria-labelledby="exercise-list-title" className="space-y-3">
+        <h2 id="exercise-list-title" className="text-lg font-bold">
           Ejercicios
         </h2>
-        <ol className="space-y-3">
+        <ol className="space-y-2.5">
           {routine.items.map((item, index) => (
             <li key={item.exerciseId}>
-              <Card className="flex items-center gap-4 p-4">
-                <span
-                  aria-hidden="true"
-                  className={`flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${tone.bubble} ${tone.text}`}
-                >
-                  {index + 1}
-                </span>
-                <div>
-                  <p className="font-semibold">{getExercise(item.exerciseId)?.name ?? item.exerciseId}</p>
-                  <p className="text-sm text-ink-500">
-                    {item.sets} × {item.target}
-                  </p>
-                </div>
-              </Card>
+              <ExerciseListItem
+                href={routeHref({ name: 'exercise', routineId, part: 'main', index })}
+                exerciseId={item.exerciseId}
+                number={index + 1}
+                detail={item.sets > 1 ? `${item.sets} × ${item.target}` : item.target}
+                tone={routine.tone}
+              />
             </li>
           ))}
         </ol>
       </section>
 
+      {warmUp && (
+        <Card tone="sage" className="flex gap-3 p-4">
+          <Info size={20} className="mt-0.5 shrink-0 text-sage-700" aria-hidden="true" />
+          <p className="text-sm text-ink-700">
+            Al terminar, si te apetece, la <a href={routeHref({ name: 'routine', id: 'mobility' })} className="font-semibold text-sage-700 underline underline-offset-2">movilidad diaria</a>{' '}
+            incluye estiramientos más largos. Los estiramientos sostenidos van mejor después de entrenar que antes.
+          </p>
+        </Card>
+      )}
+
       <Card tone="lavender" className="flex gap-3 p-4">
         <Info size={20} className="mt-0.5 shrink-0 text-bloom-700" aria-hidden="true" />
         <p className="text-sm text-ink-700">
-          Pronto podrás ver cada ejercicio paso a paso e iniciar la rutina guiada con series, descansos y temporizador.
+          Toca cualquier ejercicio para ver cómo se hace. Pronto podrás iniciar la rutina guiada con series, descansos y
+          temporizador.
         </p>
       </Card>
     </div>

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { DEFAULT_WEEKLY_PLAN } from '../data/weeklyPlan'
+import { toISODate } from '../lib/dates'
 import { createId } from '../lib/id'
+import { MAX_TRAINING_DAYS, planFromTrainingDays } from '../lib/onboarding'
 import { clearAllAppData, createDefaultAppData, loadAppData, saveAppData } from '../lib/storage'
 import type { AppData, ISODate, PlanSlot, RoutineId, WeekdayKey } from '../types'
-import { AppDataContext, type AppDataContextValue } from './appDataContext'
+import { AppDataContext, type AppDataContextValue, type OnboardingChoices } from './appDataContext'
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
   // Se lee una sola vez al iniciar (inicializador perezoso).
@@ -32,7 +34,43 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const updatePreferences = useCallback<AppDataContextValue['updatePreferences']>((patch) => {
-    setData((current) => ({ ...current, preferences: { ...current.preferences, ...patch } }))
+    setData((current) => {
+      const preferences = { ...current.preferences, ...patch }
+      // Al activar el plan para principiantes, sus dos semanas empiezan hoy.
+      if (patch.beginnerPlan && !current.preferences.beginnerPlan) preferences.beginnerPlanStartedOn = toISODate(new Date())
+      return { ...current, preferences }
+    })
+  }, [])
+
+  const updateReminders = useCallback<AppDataContextValue['updateReminders']>((patch) => {
+    setData((current) => ({ ...current, reminders: { ...current.reminders, ...patch } }))
+  }, [])
+
+  const dismissReminder = useCallback((date: ISODate) => {
+    setData((current) => ({ ...current, reminders: { ...current.reminders, lastDismissedOn: date } }))
+  }, [])
+
+  const completeOnboarding = useCallback((choices: OnboardingChoices) => {
+    setData((current) => {
+      const days = choices.trainingDays.slice(0, MAX_TRAINING_DAYS)
+      return {
+        ...current,
+        preferences: {
+          ...current.preferences,
+          plan: days.length > 0 ? planFromTrainingDays(days) : current.preferences.plan,
+          weeklyStrengthGoal: days.length > 0 ? days.length : current.preferences.weeklyStrengthGoal,
+          preferredSession: choices.preferredSession,
+          beginnerPlan: choices.beginnerPlan,
+          ...(choices.beginnerPlan ? { beginnerPlanStartedOn: toISODate(new Date()) } : {}),
+          onboardingCompleted: true,
+        },
+        reminders: { ...current.reminders, time: choices.reminderTime, enabled: choices.remindersEnabled },
+      }
+    })
+  }, [])
+
+  const restartOnboarding = useCallback(() => {
+    setData((current) => ({ ...current, preferences: { ...current.preferences, onboardingCompleted: false } }))
   }, [])
 
   const setPlanDay = useCallback((day: WeekdayKey, slot: PlanSlot) => {
@@ -87,6 +125,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       toggleFavorite,
       addNote,
       deleteNote,
+      updateReminders,
+      dismissReminder,
+      completeOnboarding,
+      restartOnboarding,
       resetAllData,
     }),
     [
@@ -101,6 +143,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       toggleFavorite,
       addNote,
       deleteNote,
+      updateReminders,
+      dismissReminder,
+      completeOnboarding,
+      restartOnboarding,
       resetAllData,
     ],
   )

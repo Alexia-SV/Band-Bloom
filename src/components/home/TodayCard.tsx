@@ -1,6 +1,8 @@
 import { CalendarDays, Dumbbell, Flower2, Moon, PartyPopper, Play, Sparkles, Timer, Undo2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { getExercise } from '../../data/exercises'
+import { getWarmUp } from '../../data/warmups'
+import { ExerciseFigure } from '../exercise/ExerciseFigure'
 import { getRoutine, routineTitle } from '../../data/routines'
 import { capitalize, parseISODate, WEEKDAY_NAME, weekdayKey } from '../../lib/dates'
 import type { DashboardSummary } from '../../lib/recommendation'
@@ -71,6 +73,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
       // Con preferencia de 10 min se propone la rutina corta, sin perder de vista la del día.
       const routine = rec.preferShort ? getRoutine('short') : planned
       const first = routine.items[0]
+      const warmUp = getWarmUp(routine.id)
       return (
         <Shell tone={routine.tone} icon={rec.preferShort ? Timer : Dumbbell} eyebrow={eyebrow} title={routineTitle(routine)}>
           <p className="mt-3 text-sm text-ink-700">{routine.muscleGroups.join(' · ')}</p>
@@ -96,10 +99,21 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
               {routine.items.length} ejercicios
             </li>
           </ul>
-          <p className="mt-4 text-sm text-ink-700">
-            Primer ejercicio: <strong className="font-semibold">{getExercise(first.exerciseId)?.name}</strong> · {first.sets} ×{' '}
-            {first.target}
-          </p>
+          <a
+            href={routeHref({ name: 'exercise', routineId: routine.id, part: 'main', index: 0 })}
+            className="mt-4 flex items-center gap-3 rounded-2xl bg-white/80 p-2 pr-3 transition hover:bg-white"
+          >
+            <span className="block size-14 shrink-0 overflow-hidden rounded-xl bg-white">
+              <ExerciseFigure exerciseId={first.exerciseId} frame={1} className="size-full" />
+            </span>
+            <span className="min-w-0 text-sm text-ink-700">
+              {warmUp && <span className="block">Calentamiento de {warmUp.durationLabel} y después:</span>}
+              <strong className="block font-semibold text-ink-900">{getExercise(first.exerciseId)?.name}</strong>
+              <span className="block">
+                {first.sets} × {first.target}
+              </span>
+            </span>
+          </a>
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
             <LinkButton href={routeHref({ name: 'routine', id: routine.id })} icon={Play} className="w-full sm:w-auto">
               Comenzar

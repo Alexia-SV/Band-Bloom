@@ -4,6 +4,7 @@ import { Card } from '../../components/ui/Card'
 import { ScreenHeader } from '../../components/ui/ScreenHeader'
 import { APP_NAME, APP_VERSION } from '../../data/app'
 import { toISODate } from '../../lib/dates'
+import { downloadFile } from '../../lib/download'
 import { useAppData } from '../../state/useAppData'
 
 type ExportStatus = 'idle' | 'done' | 'error'
@@ -19,16 +20,7 @@ export function DataScreen() {
   function exportJson() {
     try {
       const payload = { app: APP_NAME, version: APP_VERSION, exportedAt: new Date().toISOString(), data }
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `band-and-bloom-${toISODate(new Date())}.json`
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      // Damos tiempo al navegador para iniciar la descarga antes de liberar el archivo.
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+      downloadFile(`band-and-bloom-${toISODate(new Date())}.json`, JSON.stringify(payload, null, 2), 'application/json')
       setExportStatus('done')
     } catch {
       setExportStatus('error')

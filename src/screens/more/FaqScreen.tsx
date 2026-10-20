@@ -2,8 +2,8 @@ import { ChevronDown } from 'lucide-react'
 import { ScreenHeader } from '../../components/ui/ScreenHeader'
 
 /**
- * Solo respuestas que son ciertas hoy. Las preguntas sobre instalación,
- * modo sin conexión y recordatorios se agregan cuando esas funciones existan.
+ * Solo respuestas que son ciertas hoy. Las preguntas sobre instalación
+ * y modo sin conexión se agregan cuando esas funciones existan.
  */
 const FAQ: Array<{ question: string; answer: string }> = [
   {
@@ -32,6 +32,11 @@ const FAQ: Array<{ question: string; answer: string }> = [
     question: '¿Qué liga uso?',
     answer:
       'Empieza con la rosa (Light) en todo. La morada (X-Heavy) es muy fuerte: déjala para piernas y glúteos cuando la rosa ya se sienta fácil con buena técnica.',
+  },
+  {
+    question: '¿La app me manda notificaciones?',
+    answer:
+      'Todavía no. Si la abres después de tu hora de recordatorio, verás un aviso dentro de la app. Para que tu teléfono te avise aunque la app esté cerrada, agrega el recordatorio a tu calendario desde Más → Recordatorios, o crea una automatización en la app Atajos.',
   },
   {
     question: '¿Puedo cambiar mis días de entrenamiento?',

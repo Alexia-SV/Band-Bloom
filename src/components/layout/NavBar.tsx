@@ -13,7 +13,7 @@ const TABS: Array<{ name: TabName; label: string; icon: LucideIcon }> = [
 
 /** A qué pestaña pertenece cada ruta (el detalle de rutina vive dentro de "Rutinas"). */
 function activeTab(route: Route): TabName {
-  if (route.name === 'routine') return 'routines'
+  if (route.name === 'routine' || route.name === 'exercise') return 'routines'
   if (route.name === 'more-section') return 'more'
   return route.name
 }

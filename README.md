@@ -34,6 +34,24 @@ La app se publica en **https://alexia-sv.github.io/Band-Bloom/**.
 - Para referenciar archivos de `public/` desde el código usa `import.meta.env.BASE_URL` (por ejemplo, `${import.meta.env.BASE_URL}favicon.svg`), nunca una ruta que empiece con `/`.
 - Puedes ver el estado de cada despliegue en la pestaña *Actions* del repositorio.
 
+## Ilustraciones de ejercicios
+
+Las imágenes son **dibujos originales en SVG** generados por código, sin fotos externas ni licencias de terceros:
+
+- `src/lib/figure.ts` calcula la figura a partir de ángulos (cinemática directa), así todas tienen las mismas proporciones.
+- `src/data/illustrations.ts` describe cada ejercicio con dos posturas (inicio y movimiento) y sus accesorios (liga, pared, silla, tapete).
+- `src/components/exercise/ExerciseFigure.tsx` las dibuja. Funcionan sin internet y respetan "reducir movimiento".
+- En desarrollo puedes ver todas juntas en `http://localhost:5173/#/dev/ilustraciones` (no existe en la versión publicada).
+
+## Recordatorios: qué funciona y qué no
+
+| Tipo | ¿Funciona con la app cerrada? | Cómo |
+|---|---|---|
+| Aviso dentro de la app | No | Aparece en Inicio si abres la app después de tu hora y hoy no hay actividad |
+| Evento de calendario (.ics) | Sí | Más → Recordatorios → «Agregar a mi calendario». Avisa la app Calendario del teléfono |
+| Automatización en Atajos (iPhone) | Sí | Instrucciones en Más → Recordatorios |
+| Notificaciones push de la app | — | No implementadas: requieren un servidor (posible etapa extra) |
+
 ## Stack
 
 | Pieza | Para qué |
@@ -59,6 +77,9 @@ src/
 │   ├── dates.ts            # Fechas locales 'YYYY-MM-DD' y semana lunes–domingo
 │   ├── recommendation.ts   # Decide qué recomendar hoy (función pura, con pruebas)
 │   ├── storage.ts          # Lectura/escritura segura en localStorage
+│   ├── reminders.ts        # Cuándo mostrar el aviso y archivo .ics del calendario (con pruebas)
+│   ├── onboarding.ts       # Días elegidos → plan semanal
+│   ├── download.ts         # Descarga de archivos generados en el navegador
 │   ├── progress.ts         # Estadísticas, calendario e historial (funciones puras, con pruebas)
 │   ├── router.ts           # Router mínimo basado en #hash
 │   ├── id.ts               # IDs únicos
@@ -84,9 +105,9 @@ src/
 
 - [x] Etapa 1: proyecto, arquitectura y pantalla Inicio funcional
 - [x] Etapa 2: sistema de diseño completo y pantallas Rutinas, Progreso y Más
-- [ ] Etapa 3: base de ejercicios con instrucciones e ilustraciones
+- [x] Etapa 3: base de ejercicios con instrucciones, ilustraciones originales y calentamiento por rutina
 - [ ] Etapa 4: entrenamiento guiado (series, descansos, pausa)
 - [ ] Etapa 5: guardar sesiones de entrenamiento (la pantalla de progreso y la exportación JSON ya existen)
 - [ ] Etapa 6: PWA instalable y offline
-- [ ] Etapa 7: recordatorios y onboarding
+- [x] Etapa 7: recordatorios (aviso dentro de la app, evento de calendario .ics, guía de Atajos) y onboarding
 - [ ] Etapa 8: verificación final y guía de instalación
