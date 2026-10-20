@@ -12,6 +12,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 # Si llegan dos pushes seguidos, solo se publica el más reciente.
 concurrency:
@@ -48,5 +49,22 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # Protección: si Pages sigue en "Deploy from a branch", GitHub también publica la rama
+      # sin compilar ("pages build and deployment"). Esperamos a que termine para que
+      # nuestra versión compilada se publique después y quede encima.
+      # Con Source = "GitHub Actions" ese despliegue no existe y este paso termina enseguida.
+      - name: Esperar el despliegue automático de la rama (si existe)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in $(seq 1 40); do
+            status=$(gh api "repos/${{ github.repository }}/actions/runs?head_sha=${{ github.sha }}&per_page=20" \
+              --jq '[.workflow_runs[] | select(.name == "pages build and deployment")][0].status // "none"')
+            echo "Intento $attempt: $status"
+            if [ "$status" = "completed" ]; then break; fi
+            if [ "$status" = "none" ] && [ "$attempt" -ge 3 ]; then break; fi
+            sleep 10
+          done
+
       - id: deployment
         uses: actions/deploy-pages@v5
