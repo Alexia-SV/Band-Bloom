@@ -10,7 +10,7 @@ export function IllustrationGallery() {
           <h2 className="text-xs font-semibold">{id}</h2>
           <div className="grid grid-cols-2">
             <ExerciseFigure exerciseId={id} frame={0} className="w-full bg-bloom-50" />
-            <ExerciseFigure exerciseId={id} frame={1} className="w-full bg-peach-50" />
+            <ExerciseFigure exerciseId={id} frame={1} ghost className="w-full bg-peach-50" />
           </div>
         </section>
       ))}

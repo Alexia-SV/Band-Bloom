@@ -104,7 +104,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
             className="mt-4 flex items-center gap-3 rounded-2xl bg-white/80 p-2 pr-3 transition hover:bg-white"
           >
             <span className="block size-14 shrink-0 overflow-hidden rounded-xl bg-white">
-              <ExerciseFigure exerciseId={first.exerciseId} frame={1} className="size-full" />
+              <ExerciseFigure exerciseId={first.exerciseId} frame={1} ghost className="size-full" />
             </span>
             <span className="min-w-0 text-sm text-ink-700">
               {warmUp && <span className="block">Calentamiento de {warmUp.durationLabel} y después:</span>}

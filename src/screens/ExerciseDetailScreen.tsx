@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, HeartPulse, Infinity as BandIcon, ShieldCheck, Timer, TriangleAlert } from 'lucide-react'
-import { useId, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { ExerciseAnimation } from '../components/exercise/ExerciseAnimation'
+import { ExerciseTimer } from '../components/exercise/ExerciseTimer'
 import { Card } from '../components/ui/Card'
 import { ScreenHeader } from '../components/ui/ScreenHeader'
 import { SegmentedTabs } from '../components/ui/SegmentedTabs'
@@ -8,6 +9,7 @@ import { getExercise } from '../data/exercises'
 import { getRoutine, routineTitle } from '../data/routines'
 import { getWarmUp } from '../data/warmups'
 import { partLength, routeHref, type ExercisePart, type Route } from '../lib/router'
+import { parseRest, phasesForItem, type TimerPhase } from '../lib/timer'
 import { cn, TONE_STYLES } from '../lib/tones'
 import type { RoutineId, RoutineItem } from '../types'
 
@@ -34,6 +36,47 @@ function sequence(routineId: RoutineId): Array<{ part: ExercisePart; index: numb
 
 function setsLabel(item: RoutineItem, part: ExercisePart): string {
   return part === 'warmup' || item.sets === 1 ? item.target : `${item.sets} × ${item.target}`
+}
+
+/**
+ * Temporizador con el tiempo exacto del ejercicio (si va por tiempo)
+ * o con el descanso entre series (si va por repeticiones).
+ */
+function TimerSection({ itemTarget, exerciseTarget, rest }: { itemTarget: string; exerciseTarget: string; rest?: string }) {
+  const timedPhases = useMemo(() => phasesForItem(itemTarget, exerciseTarget), [itemTarget, exerciseTarget])
+  const restRange = rest ? parseRest(rest) : null
+  const [restSeconds, setRestSeconds] = useState(restRange?.min ?? 60)
+  const restPhases = useMemo<TimerPhase[]>(() => [{ label: 'Descanso', seconds: restSeconds }], [restSeconds])
+
+  if (timedPhases) {
+    return <ExerciseTimer title="Temporizador" phases={timedPhases} doneMessage="¡Listo! Pasa al siguiente cuando quieras." />
+  }
+  if (restRange) {
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-ink-500">Haz las repeticiones a tu ritmo. Al terminar cada serie, inicia el descanso.</p>
+        <ExerciseTimer
+          title="Descanso entre series"
+          phases={restPhases}
+          doneMessage="Descanso terminado: a la siguiente serie."
+          options={
+            restRange.max > restRange.min
+              ? [restRange.min, restRange.max].map((seconds) => ({
+                  label: `${seconds} s`,
+                  selected: restSeconds === seconds,
+                  onSelect: () => setRestSeconds(seconds),
+                }))
+              : undefined
+          }
+        />
+      </div>
+    )
+  }
+  return (
+    <p className="rounded-2xl bg-white/70 p-4 text-sm text-ink-700 ring-1 ring-ink-200/60">
+      Este ejercicio va por repeticiones ({itemTarget}): hazlas a tu ritmo, sin prisa.
+    </p>
+  )
 }
 
 export function ExerciseDetailScreen({ routineId, part, index }: ExerciseDetailScreenProps) {
@@ -89,6 +132,12 @@ export function ExerciseDetailScreen({ routineId, part, index }: ExerciseDetailS
       </ul>
 
       <ExerciseAnimation exerciseId={exercise.id} name={exercise.name} tone={tone} />
+
+      <TimerSection
+        itemTarget={item.target}
+        exerciseTarget={exercise.target}
+        rest={part === 'main' ? exercise.rest : undefined}
+      />
 
       <p className="text-[15px] leading-relaxed text-ink-700">{exercise.description}</p>
 

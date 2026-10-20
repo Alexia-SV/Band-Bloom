@@ -27,7 +27,7 @@ export function ExerciseListItem({ href, exerciseId, number, detail, tone }: Exe
         {number}
       </span>
       <span className={cn('block size-18 shrink-0 overflow-hidden rounded-2xl', TONE_STYLES[tone].card)}>
-        <ExerciseFigure exerciseId={exerciseId} frame={1} className="size-full" />
+        <ExerciseFigure exerciseId={exerciseId} frame={1} ghost className="size-full" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-semibold leading-snug">{name}</span>

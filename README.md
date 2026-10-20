@@ -41,7 +41,14 @@ Las imágenes son **dibujos originales en SVG** generados por código, sin fotos
 - `src/lib/figure.ts` calcula la figura a partir de ángulos (cinemática directa), así todas tienen las mismas proporciones.
 - `src/data/illustrations.ts` describe cada ejercicio con dos posturas (inicio y movimiento) y sus accesorios (liga, pared, silla, tapete).
 - `src/components/exercise/ExerciseFigure.tsx` las dibuja. Funcionan sin internet y respetan "reducir movimiento".
+- Cada figura lleva top deportivo, leggings, tenis, cabello y sombra; en las miniaturas se ve una silueta clara de la postura inicial para entender el movimiento.
 - En desarrollo puedes ver todas juntas en `http://localhost:5173/#/dev/ilustraciones` (no existe en la versión publicada).
+
+## Temporizador de ejercicios
+
+- `src/lib/timer.ts` convierte el objetivo escrito en fases exactas: "30 s por lado" → 2 × 30 s; "15 s por dirección, cada pie" → 4 × 15 s; "20 s atrás + 20 s adelante" → 2 fases.
+- Los ejercicios por repeticiones muestran el **descanso entre series** (por ejemplo, 60 o 90 s).
+- El conteo se basa en la hora de término, así no se desfasa si el teléfono pausa la pestaña. Incluye 3 s para prepararte, pausa, reiniciar, saltar, sonido opcional y pantalla encendida mientras corre (si el navegador lo permite).
 
 ## Recordatorios: qué funciona y qué no
 
