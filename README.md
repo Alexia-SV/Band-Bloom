@@ -1,7 +1,8 @@
 # Band & Bloom 💜
 
 App web progresiva (PWA) para entrenar fuerza en casa con dos ligas: rosa (Light) y morada (X-Heavy).
-Te dice qué toca hoy, sin presión, sin cuentas y sin enviar tus datos a ningún lado.
+Te dice qué toca hoy, sin presión. Funciona sin cuenta (todo en tu teléfono) o con la cuenta de
+[Mi Semana](https://alexia-sv.github.io/mi-semana/) para tener tus datos en la nube y en todos tus dispositivos.
 
 ## Requisitos
 
@@ -33,6 +34,17 @@ La app se publica en **https://alexia-sv.github.io/Band-Bloom/**.
 - `vite.config.ts` usa la ruta base `/Band-Bloom/` al compilar (`npm run build`) y en `npm run preview`; en `npm run dev` se usa la raíz.
 - Para referenciar archivos de `public/` desde el código usa `import.meta.env.BASE_URL` (por ejemplo, `${import.meta.env.BASE_URL}favicon.svg`), nunca una ruta que empiece con `/`.
 - Puedes ver el estado de cada despliegue en la pestaña *Actions* del repositorio.
+
+## Cuenta y nube (Supabase, compartida con Mi Semana)
+
+- Usa **la misma base de datos y la misma cuenta** que Mi Semana (proyecto `mi-semana` en Supabase). Se entra en *Más → Mis datos* o desde la bienvenida.
+- Sin cuenta todo sigue funcionando como antes, solo en el dispositivo.
+- Tablas (crear una vez con `supabase/band-and-bloom.sql` en el SQL Editor):
+  - `bb_datos`: un documento por persona con ajustes, plan, recordatorios, notas y días de descanso.
+  - `bb_sesiones`: una fila por entrenamiento (la fase 5 las guarda con `addSession`).
+- `localStorage` sigue siendo la copia local: la app abre al instante y sin internet; los cambios se suben después (`band-and-bloom:data:pendiente-nube`).
+- La primera vez que un dispositivo entra a la cuenta se suman sus descansos, notas y sesiones a los de la nube; después la nube manda.
+- **Conexión con Mi Semana:** al guardar una sesión completa o marcar "Hoy descanso", se palomea el pendiente *Casa · Ejercicio* en Mi Semana (`src/lib/miSemana.ts`, con pruebas), igual que si lo marcaras allá: con su racha y el siguiente día que le toca. El día cambia a las 4 a. m., como en Mi Semana.
 
 ## Ilustraciones de ejercicios
 
@@ -76,6 +88,7 @@ Las imágenes son **dibujos originales en SVG** generados por código, sin fotos
 | Plus Jakarta Sans (Fontsource) | Tipografía, empaquetada localmente para funcionar sin internet |
 | vite-plugin-pwa | Manifest y service worker (se configura en la Etapa 6) |
 | Vitest | Pruebas de la lógica |
+| Supabase (supabase-js) | Cuenta y datos en la nube, compartidos con Mi Semana |
 
 ## Estructura
 
@@ -89,7 +102,11 @@ src/
 ├── lib/
 │   ├── dates.ts            # Fechas locales 'YYYY-MM-DD' y semana lunes–domingo
 │   ├── recommendation.ts   # Decide qué recomendar hoy (función pura, con pruebas)
-│   ├── storage.ts          # Lectura/escritura segura en localStorage
+│   ├── storage.ts          # Lectura/escritura segura en localStorage (copia local)
+│   ├── supabase.ts         # Cliente de Supabase (mismo proyecto que Mi Semana)
+│   ├── cloud.ts            # Subir/traer datos de la nube y palomear el ejercicio en Mi Semana
+│   ├── sync.ts             # Cómo se juntan la nube y el dispositivo (funciones puras, con pruebas)
+│   ├── miSemana.ts         # Reglas de Mi Semana: día a las 4 a. m. y pendientes que se repiten (con pruebas)
 │   ├── reminders.ts        # Cuándo mostrar el aviso y archivo .ics del calendario (con pruebas)
 │   ├── onboarding.ts       # Días elegidos → plan semanal
 │   ├── download.ts         # Descarga de archivos generados en el navegador
@@ -110,7 +127,7 @@ src/
 ## Decisiones técnicas
 
 - **Router por hash** (`#/rutinas`): no hace falta una librería ni configurar el servidor, y funciona igual sin conexión.
-- **localStorage con validación**: si los datos guardados están dañados, la app no se rompe. Guarda un respaldo y empieza de cero avisándote.
+- **localStorage con validación** (también como copia local cuando hay cuenta): si los datos guardados están dañados, la app no se rompe. Guarda un respaldo y empieza de cero avisándote.
 - **La recomendación es una función pura** (`buildDashboard`): recibe datos y fecha, y devuelve qué mostrar. Por eso se puede probar sin navegador.
 - **Fechas locales**: los días se guardan como `YYYY-MM-DD` según tu zona horaria, no en UTC, para que un entrenamiento a las 11 p. m. no aparezca en el día siguiente.
 

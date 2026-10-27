@@ -130,7 +130,7 @@ export function PreferencesScreen() {
         </button>
       </Card>
 
-      <p className="text-center text-sm text-ink-500">Los cambios se guardan automáticamente en este dispositivo.</p>
+      <p className="text-center text-sm text-ink-500">Los cambios se guardan automáticamente.</p>
     </div>
   )
 }

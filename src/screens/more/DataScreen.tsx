@@ -1,5 +1,6 @@
 import { CircleCheck, Download, Trash, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
+import { AccountCard } from '../../components/account/AccountCard'
 import { Card } from '../../components/ui/Card'
 import { ScreenHeader } from '../../components/ui/ScreenHeader'
 import { APP_NAME, APP_VERSION } from '../../data/app'
@@ -10,7 +11,7 @@ import { useAppData } from '../../state/useAppData'
 type ExportStatus = 'idle' | 'done' | 'error'
 
 export function DataScreen() {
-  const { data, resetAllData } = useAppData()
+  const { data, resetAllData, account } = useAppData()
   const [exportStatus, setExportStatus] = useState<ExportStatus>('idle')
   const [confirmingReset, setConfirmingReset] = useState(false)
   const [resetDone, setResetDone] = useState(false)
@@ -29,7 +30,13 @@ export function DataScreen() {
 
   return (
     <div className="space-y-5">
-      <ScreenHeader title="Mis datos" subtitle="Todo se guarda solo en este dispositivo." backTo={{ name: 'more' }} />
+      <ScreenHeader
+        title="Mis datos"
+        subtitle={account.email ? 'Se guardan en tu cuenta de Mi Semana.' : 'Por ahora se guardan solo en este dispositivo.'}
+        backTo={{ name: 'more' }}
+      />
+
+      <AccountCard />
 
       <Card as="section" className="p-5" aria-labelledby="data-summary-title">
         <h2 id="data-summary-title" className="font-bold">
@@ -82,8 +89,9 @@ export function DataScreen() {
           Borrar todos mis datos
         </h2>
         <p className="mt-1 text-sm text-ink-700">
-          Elimina tu historial, notas, descansos y ajustes de este dispositivo. No se puede deshacer, así que te
-          recomendamos exportar un respaldo antes.
+          Elimina tu historial, notas, descansos y ajustes de este dispositivo
+          {account.email ? ' y de tu cuenta en la nube' : ''}. No se puede deshacer, así que te recomendamos exportar
+          un respaldo antes.
         </p>
         {confirmingReset ? (
           <div className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-rose-200" role="group" aria-labelledby="reset-confirm">

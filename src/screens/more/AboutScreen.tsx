@@ -26,9 +26,11 @@ export function AboutScreen() {
           Privacidad
         </h2>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-ink-700">
-          <li>No hay cuentas ni inicio de sesión.</li>
-          <li>Tus entrenamientos, notas y ajustes se guardan solo en este dispositivo.</li>
-          <li>La app no envía tus datos a ningún servidor ni usa analíticas.</li>
+          <li>Sin cuenta, tus entrenamientos, notas y ajustes se guardan solo en este dispositivo.</li>
+          <li>
+            Si entras con tu cuenta de Mi Semana, se guardan en tu base de datos de Supabase y solo tú puedes verlos.
+          </li>
+          <li>La app no usa analíticas ni comparte tus datos con nadie.</li>
         </ul>
       </Card>
 

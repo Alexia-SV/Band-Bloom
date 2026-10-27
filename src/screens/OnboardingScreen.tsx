@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, BellRing, CalendarPlus, Dumbbell, Info, Sprout, Timer } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { AccountCard } from '../components/account/AccountCard'
 import { Card } from '../components/ui/Card'
 import { DayPicker } from '../components/ui/DayPicker'
 import { IconBubble } from '../components/ui/IconBubble'
@@ -60,6 +61,7 @@ export function OnboardingScreen() {
   const { data, completeOnboarding } = useAppData()
   const currentTrainingDays = WEEK_ORDER.filter((day) => data.preferences.plan[day].type === 'strength')
   const [step, setStep] = useState<Step>('welcome')
+  const [showAccount, setShowAccount] = useState(false)
   const [choices, setChoices] = useState<OnboardingChoices>({
     trainingDays: currentTrainingDays.length ? currentTrainingDays : ['mon', 'wed', 'fri'],
     reminderTime: data.reminders.time,
@@ -110,14 +112,28 @@ export function OnboardingScreen() {
           </p>
           <ul className="mx-auto mt-6 max-w-sm space-y-2 text-left text-sm text-ink-700">
             <li className="flex gap-2">
-              <Sprout size={18} className="mt-0.5 shrink-0 text-sage-600" aria-hidden="true" /> Sin cuentas ni datos
-              personales: todo se queda en tu teléfono.
+              <Sprout size={18} className="mt-0.5 shrink-0 text-sage-600" aria-hidden="true" /> Sin cuenta, todo se
+              queda en tu teléfono. Si usas Mi Semana, puedes entrar con esa cuenta para tenerlo en todos lados.
             </li>
             <li className="flex gap-2">
               <Sprout size={18} className="mt-0.5 shrink-0 text-sage-600" aria-hidden="true" /> Solo 4 preguntas rápidas.
               Puedes saltarlas y usar lo recomendado.
             </li>
           </ul>
+          {/* En un dispositivo nuevo, entrar trae tu configuración de la nube y salta estas preguntas. */}
+          {showAccount ? (
+            <div className="mx-auto mt-6 max-w-sm text-left">
+              <AccountCard />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowAccount(true)}
+              className="mt-6 text-sm font-semibold text-bloom-700 underline underline-offset-4"
+            >
+              ¿Ya usas Mi Semana? Entra con tu cuenta
+            </button>
+          )}
         </div>
       )
       break

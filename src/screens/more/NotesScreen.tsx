@@ -62,7 +62,7 @@ export function NotesScreen() {
 
       {data.notes.length === 0 ? (
         <EmptyState emoji="spiral-notepad" tone="peach" title="Aún no tienes notas">
-          Tus notas se guardan solo en este dispositivo.
+          Tus notas se guardan en este dispositivo (y en tu cuenta, si entraste con Mi Semana).
         </EmptyState>
       ) : (
         <section aria-labelledby="notes-title" className="space-y-3">

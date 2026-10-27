@@ -13,7 +13,7 @@ const FAQ: Array<{ question: string; answer: string }> = [
   {
     question: '¿Dónde se guardan mis datos?',
     answer:
-      'Solo en este dispositivo, dentro del navegador. No se envían a ningún servidor. Si borras los datos del navegador, se borran también; puedes exportar un respaldo desde Más → Mis datos.',
+      'Sin cuenta, solo en este dispositivo, dentro del navegador: si borras los datos del navegador, se borran también. Si entras con tu cuenta de Mi Semana (Más → Mis datos), se guardan también en la nube y los ves en todos tus dispositivos. En ambos casos puedes exportar un respaldo desde Más → Mis datos.',
   },
   {
     question: '¿Qué pasa si me salto un día?',
