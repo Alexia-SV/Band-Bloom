@@ -62,6 +62,14 @@ Las imágenes son **dibujos originales en SVG** generados por código, sin fotos
 - **Fotos de portada:** 5 fotos de [Pexels](https://www.pexels.com/license/) (uso gratuito, sin atribución obligatoria; igual damos crédito en *Sobre la app*). Están en `src/assets/covers/` como WebP (~205 KB en total) y sus autores y enlaces en `src/data/covers.ts`.
 - Todo se incluye en la app (no se carga de internet), así funcionará sin conexión cuando la PWA esté lista.
 
+## App instalable y sin internet
+
+- `vite-plugin-pwa` (en `vite.config.ts`) genera el manifest y un service worker que guarda todo lo de la app: código, fuentes, fotos, emoji e ilustraciones (~1 MB). Los datos de Supabase siempre van a la red.
+- Instalar en iPhone: Safari → Compartir → *Agregar a pantalla de inicio*. También está en Más → Preguntas frecuentes.
+- `registerType: prompt`: cuando hay versión nueva aparece "Hay una versión nueva · Actualizar" (`src/components/layout/UpdatePrompt.tsx`); no se recarga sola a medio entrenamiento.
+- Ícono: una flor que crece desde la liga, sobre degradado morado. `public/favicon.svg` es el original; los PNG (`pwa-192`, `pwa-512`, `maskable-512`, `apple-touch-icon`) son el mismo dibujo.
+- El service worker solo funciona en la versión compilada (`npm run build` + `npm run preview`) o publicada, no en `npm run dev`.
+
 ## Entrenamiento guiado
 
 - Ruta `#/rutinas/<id>/entrenar` (botón *Empezar rutina* y *Comenzar* en Inicio). Ocupa toda la pantalla, sin barra de navegación, y mantiene la pantalla encendida.
@@ -94,7 +102,7 @@ Las imágenes son **dibujos originales en SVG** generados por código, sin fotos
 | Tailwind CSS 4 | Estilos con design tokens (`src/index.css`) |
 | Lucide React | Íconos |
 | Plus Jakarta Sans (Fontsource) | Tipografía, empaquetada localmente para funcionar sin internet |
-| vite-plugin-pwa | Manifest y service worker (se configura en la Etapa 6) |
+| vite-plugin-pwa | Manifest, íconos y service worker (app instalable y sin internet) |
 | Vitest | Pruebas de la lógica |
 | Supabase (supabase-js) | Cuenta y datos en la nube, compartidos con Mi Semana |
 
@@ -146,6 +154,6 @@ src/
 - [x] Etapa 3: base de ejercicios con instrucciones, ilustraciones originales y calentamiento por rutina
 - [x] Etapa 4: entrenamiento guiado (series, descansos, pausa)
 - [x] Etapa 5: guardar sesiones de entrenamiento (en el dispositivo y, con cuenta, en Supabase)
-- [ ] Etapa 6: PWA instalable y offline
+- [x] Etapa 6: PWA instalable y offline
 - [x] Etapa 7: recordatorios (aviso dentro de la app, evento de calendario .ics, guía de Atajos) y onboarding
 - [ ] Etapa 8: verificación final y guía de instalación

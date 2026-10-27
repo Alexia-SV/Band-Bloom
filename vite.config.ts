@@ -2,6 +2,7 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // GitHub Pages publica el proyecto en https://alexia-sv.github.io/Band-Bloom/,
 // así que la compilación necesita esa subcarpeta como ruta base.
@@ -10,11 +11,39 @@ import { defineConfig } from 'vite'
 const PAGES_BASE = '/Band-Bloom/'
 
 // https://vite.dev/config/
-// El plugin PWA (vite-plugin-pwa) ya está instalado; se configura en la Etapa 6
-// junto con los íconos, el manifest y la estrategia offline.
 export default defineConfig(({ command, isPreview }) => ({
   base: command === 'build' || isPreview ? PAGES_BASE : '/',
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    // App instalable y sin internet: todo lo de la app (código, fuentes, ilustraciones, fotos, emoji)
+    // se guarda en el dispositivo. Los datos de Supabase siempre van a la red.
+    // 'prompt': la versión nueva se instala cuando tú tocas "Actualizar", así no se recarga a medio entrenamiento.
+    VitePWA({
+      registerType: 'prompt',
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'Band & Bloom',
+        short_name: 'Band & Bloom',
+        description: 'Tu rutina de fuerza en casa con ligas, sin presión.',
+        lang: 'es-MX',
+        start_url: '.',
+        scope: '.',
+        display: 'standalone',
+        background_color: '#f8f6fd',
+        theme_color: '#ede9fe',
+        icons: [
+          { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,webp,woff2}'],
+        cleanupOutdatedCaches: true,
+      },
+    }),
+  ],
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts'],

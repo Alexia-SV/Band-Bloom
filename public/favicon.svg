@@ -1,6 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="16" fill="#EDE9FE"/>
-  <ellipse cx="32" cy="40" rx="18" ry="7" fill="none" stroke="#F38AA7" stroke-width="4"/>
-  <path d="M32 38c0-10 4-17 13-20-1 10-5 17-13 20z" fill="#7563D9"/>
-  <path d="M32 38c0-8-3-13-10-15 0 8 4 13 10 15z" fill="#A897F2"/>
+  <!-- Band & Bloom: una flor que crece desde la liga. Los PNG de public/ se generan con este mismo dibujo. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a08ff2"/>
+      <stop offset="1" stop-color="#5b4ac4"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <path d="M12 44 A20 7 0 0 1 52 44" fill="none" stroke="#d9668c" stroke-width="5"/>
+  <path d="M32 45 C32 38 31 32 32 24" fill="none" stroke="#5aa874" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M32 36 C27 36 24 33 23 29 C28 29 31 31 32 36Z" fill="#8fd1a6"/>
+  <path d="M32 33 C37 33 40 30 41 26 C36 26 33 28 32 33Z" fill="#6cbf8a"/>
+  <g fill="#ffb3cb">
+    <circle cx="32" cy="14.6" r="4.2"/>
+    <circle cx="36.18" cy="17.64" r="4.2"/>
+    <circle cx="34.59" cy="22.56" r="4.2"/>
+    <circle cx="29.41" cy="22.56" r="4.2"/>
+    <circle cx="27.82" cy="17.64" r="4.2"/>
+  </g>
+  <circle cx="32" cy="19" r="3" fill="#ffd66b"/>
+  <path d="M12 44 A20 7 0 0 0 52 44" fill="none" stroke="#f38aa7" stroke-width="5"/>
+  <g fill="#ffffff" opacity="0.85">
+    <path d="M14 11 L15 14 L18 15 L15 16 L14 19 L13 16 L10 15 L13 14Z"/>
+    <path d="M51 10 L51.7 12.3 L54 13 L51.7 13.7 L51 16 L50.3 13.7 L48 13 L50.3 12.3Z"/>
+  </g>
 </svg>

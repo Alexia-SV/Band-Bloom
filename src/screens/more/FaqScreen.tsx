@@ -1,14 +1,22 @@
 import { ChevronDown } from 'lucide-react'
 import { ScreenHeader } from '../../components/ui/ScreenHeader'
 
-/**
- * Solo respuestas que son ciertas hoy. Las preguntas sobre instalación
- * y modo sin conexión se agregan cuando esas funciones existan.
- */
+/** Solo respuestas que son ciertas hoy. */
 const FAQ: Array<{ question: string; answer: string }> = [
   {
     question: '¿Necesito crear una cuenta?',
-    answer: 'No. La app funciona sin cuenta, sin registro y sin pagos.',
+    answer:
+      'No. La app funciona sin cuenta y sin pagos. Si usas Mi Semana, puedes entrar con esa misma cuenta (Más → Mis datos) para tener tus datos en todos tus dispositivos.',
+  },
+  {
+    question: '¿Cómo la instalo en mi iPhone?',
+    answer:
+      'Ábrela en Safari, toca el botón Compartir y elige "Agregar a pantalla de inicio". Desde el icono abre como app, sin las barras de Safari. En Android, Chrome te ofrece "Instalar app" en su menú.',
+  },
+  {
+    question: '¿Funciona sin internet?',
+    answer:
+      'Sí. Después de abrirla una vez con internet, la app (ejercicios, ilustraciones y temporizador) queda guardada en tu teléfono. Si tienes cuenta, lo que hagas sin conexión se sube cuando vuelva el internet.',
   },
   {
     question: '¿Dónde se guardan mis datos?',
