@@ -48,25 +48,57 @@ export function rowToSession(row: SessionRow): WorkoutSession {
 }
 
 /**
- * Junta la nube con este dispositivo. Los ajustes de la nube mandan y se conservan las sesiones
- * locales que todavía no se subieron (`missing`, para subirlas después). Con `firstLink` (la primera
- * vez que este dispositivo entra a la cuenta) también se suman sus días de descanso y notas.
+ * Cómo juntar la nube con este dispositivo:
+ * - 'cloud': los ajustes de la nube mandan; se suman las sesiones locales que faltan.
+ * - 'first-link': primera vez que este dispositivo entra a la cuenta; además se suman sus descansos y notas.
+ * - 'local': este dispositivo tiene cambios sin subir; mandan sus ajustes y se suman las sesiones de la nube.
+ * - 'cloud-only': solo la nube (después de un "Borrar todo" en otro dispositivo, o si los datos de aquí
+ *   son de otra cuenta); nada de este dispositivo se sube.
  */
+export type MergeMode = 'cloud' | 'first-link' | 'local' | 'cloud-only'
+
+/**
+ * Qué modo usar según la cuenta a la que pertenecen los datos de este dispositivo (`linkedUser`),
+ * si hay cambios sin subir y el último "Borrar todo" de la nube frente al que este dispositivo ya vio.
+ */
+export function chooseMergeMode(input: {
+  linkedUser: string | null
+  userId: string
+  dirty: boolean
+  cloudResetAt: string | null
+  seenResetAt: string | null
+}): MergeMode {
+  if (input.linkedUser !== null && input.linkedUser !== input.userId) return 'cloud-only'
+  if (input.cloudResetAt && input.cloudResetAt !== input.seenResetAt) return 'cloud-only'
+  if (input.linkedUser === null) return 'first-link'
+  return input.dirty ? 'local' : 'cloud'
+}
+
+/** `missing` son las sesiones locales que la nube no tiene, para subirlas. */
 export function mergeCloud(
   datos: unknown,
   cloudSessions: WorkoutSession[],
   local: AppData,
-  firstLink: boolean,
+  mode: MergeMode,
 ): { merged: unknown; missing: WorkoutSession[] } {
+  if (mode === 'cloud-only') return { merged: { ...asRecord(datos), sessions: cloudSessions }, missing: [] }
+
   const ids = new Set(cloudSessions.map((session) => session.id))
   const missing = local.sessions.filter((session) => !ids.has(session.id))
-  const base: Record<string, unknown> = typeof datos === 'object' && datos !== null ? { ...datos } : {}
-  if (firstLink) {
+  const sessions = [...cloudSessions, ...missing]
+  if (mode === 'local') return { merged: { ...cloudDatos(local), sessions }, missing }
+
+  const base = asRecord(datos)
+  if (mode === 'first-link') {
     const cloudRest = Array.isArray(base.restDays) ? base.restDays : []
     const cloudNotes = Array.isArray(base.notes) ? (base.notes as Array<{ id?: unknown }>) : []
     const noteIds = new Set(cloudNotes.map((note) => note?.id))
     base.restDays = [...new Set([...cloudRest, ...local.restDays])]
     base.notes = [...cloudNotes, ...local.notes.filter((note) => !noteIds.has(note.id))]
   }
-  return { merged: { ...base, sessions: [...cloudSessions, ...missing] }, missing }
+  return { merged: { ...base, sessions }, missing }
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return typeof value === 'object' && value !== null ? { ...(value as Record<string, unknown>) } : {}
 }

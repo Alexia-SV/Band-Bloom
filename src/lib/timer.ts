@@ -104,7 +104,8 @@ export interface TimerState {
 }
 
 export type TimerAction =
-  | { type: 'start'; now: number }
+  /** `skipPrep`: empieza a contar de inmediato, sin los 3 s de "Prepárate" (por ejemplo, un descanso). */
+  | { type: 'start'; now: number; skipPrep?: boolean }
   | { type: 'pause'; now: number }
   | { type: 'resume'; now: number }
   | { type: 'reset' }
@@ -121,6 +122,9 @@ export function timerReducer(phases: TimerPhase[], state: TimerState, action: Ti
   switch (action.type) {
     case 'start':
       if (state.status !== 'idle' && state.status !== 'done') return state
+      if (action.skipPrep) {
+        return { status: 'running', phaseIndex: 0, endsAt: action.now + durationMs(0), remainingMs: durationMs(0), pausedFrom: null }
+      }
       return { status: 'prep', phaseIndex: 0, endsAt: action.now + PREP_SECONDS * 1000, remainingMs: durationMs(0), pausedFrom: null }
 
     case 'pause':

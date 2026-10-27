@@ -4,6 +4,21 @@ App web progresiva (PWA) para entrenar fuerza en casa con dos ligas: rosa (Light
 Te dice qué toca hoy, sin presión. Funciona sin cuenta (todo en tu teléfono) o con la cuenta de
 [Mi Semana](https://alexia-sv.github.io/mi-semana/) para tener tus datos en la nube y en todos tus dispositivos.
 
+## Guía de instalación (para usarla)
+
+La app vive en **https://alexia-sv.github.io/Band-Bloom/**. Dentro de la app está la misma guía en *Más → Instalar la app*.
+
+**iPhone o iPad**
+1. Abre la dirección en **Safari**.
+2. Toca **Compartir** y elige **Agregar a pantalla de inicio** → **Agregar**.
+3. Ábrela desde el ícono (la flor que crece desde la liga).
+4. Opcional: en *Más → Mis datos* entra con tu cuenta de Mi Semana. En iPhone la app instalada guarda sus datos aparte de Safari, así que entra desde el ícono.
+
+**Android:** en Chrome, menú ⋮ → **Instalar app**.
+**Computadora:** en Chrome o Edge, ícono de instalar al final de la barra de direcciones.
+
+Ábrela una vez con internet para que quede lista sin conexión. Cuando aparezca «Hay una versión nueva», toca **Actualizar**.
+
 ## Requisitos
 
 - Node.js 20.19+ o 22.12+ (probado con Node 22.22)
@@ -43,7 +58,10 @@ La app se publica en **https://alexia-sv.github.io/Band-Bloom/**.
   - `bb_datos`: un documento por persona con ajustes, plan, recordatorios, notas y días de descanso.
   - `bb_sesiones`: una fila por entrenamiento (la fase 5 las guarda con `addSession`).
 - `localStorage` sigue siendo la copia local: la app abre al instante y sin internet; los cambios se suben después (`band-and-bloom:data:pendiente-nube`).
-- La primera vez que un dispositivo entra a la cuenta se suman sus descansos, notas y sesiones a los de la nube; después la nube manda.
+- Cómo se juntan la nube y el dispositivo (`chooseMergeMode` y `mergeCloud` en `sync.ts`, con pruebas): la primera vez se suman descansos, notas y sesiones; si hay cambios sin subir, mandan los del dispositivo; si no, manda la nube. Los datos quedan ligados a la cuenta (`band-and-bloom:data:cuenta`), así otra cuenta en el mismo dispositivo no recibe datos ajenos.
+- Si cambias algo mientras sincroniza, tu cambio no se pierde: se queda y se sube después.
+- "Borrar todo" con cuenta borra también la nube y deja una marca (`resetAt`) para que los otros dispositivos no vuelvan a subir lo borrado. Sin internet, se termina en la próxima sincronización.
+- Las marcas en Mi Semana que fallan sin internet se guardan y se reintentan al sincronizar. "Cambié de opinión" en un descanso también lo deshace en Mi Semana.
 - **Conexión con Mi Semana:** al guardar una sesión completa o marcar "Hoy descanso", se palomea el pendiente *Casa · Ejercicio* en Mi Semana (`src/lib/miSemana.ts`, con pruebas), igual que si lo marcaras allá: con su racha y el siguiente día que le toca. El día cambia a las 4 a. m., como en Mi Semana.
 
 ## Ilustraciones de ejercicios
@@ -91,7 +109,7 @@ Las imágenes son **dibujos originales en SVG** generados por código, sin fotos
 | Aviso dentro de la app | No | Aparece en Inicio si abres la app después de tu hora y hoy no hay actividad |
 | Evento de calendario (.ics) | Sí | Más → Recordatorios → «Agregar a mi calendario». Avisa la app Calendario del teléfono |
 | Automatización en Atajos (iPhone) | Sí | Instrucciones en Más → Recordatorios |
-| Notificaciones push de la app | — | No implementadas: requieren un servidor (posible etapa extra) |
+| Notificaciones push | Sí | Desde Mi Semana (campana 🔔): a las 11 p. m. avisa si falta el ejercicio. Band & Bloom no manda las suyas |
 
 ## Stack
 
@@ -156,4 +174,4 @@ src/
 - [x] Etapa 5: guardar sesiones de entrenamiento (en el dispositivo y, con cuenta, en Supabase)
 - [x] Etapa 6: PWA instalable y offline
 - [x] Etapa 7: recordatorios (aviso dentro de la app, evento de calendario .ics, guía de Atajos) y onboarding
-- [ ] Etapa 8: verificación final y guía de instalación
+- [x] Etapa 8: verificación final y guía de instalación

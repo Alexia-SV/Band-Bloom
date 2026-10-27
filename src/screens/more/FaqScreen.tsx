@@ -11,7 +11,7 @@ const FAQ: Array<{ question: string; answer: string }> = [
   {
     question: '¿Cómo la instalo en mi iPhone?',
     answer:
-      'Ábrela en Safari, toca el botón Compartir y elige "Agregar a pantalla de inicio". Desde el icono abre como app, sin las barras de Safari. En Android, Chrome te ofrece "Instalar app" en su menú.',
+      'Ábrela en Safari, toca el botón Compartir y elige "Agregar a pantalla de inicio". Desde el ícono abre como app, sin las barras de Safari. Los pasos para iPhone, Android y computadora están en Más → Instalar la app.',
   },
   {
     question: '¿Funciona sin internet?',
@@ -44,7 +44,7 @@ const FAQ: Array<{ question: string; answer: string }> = [
   {
     question: '¿La app me manda notificaciones?',
     answer:
-      'Todavía no. Si la abres después de tu hora de recordatorio, verás un aviso dentro de la app. Para que tu teléfono te avise aunque la app esté cerrada, agrega el recordatorio a tu calendario desde Más → Recordatorios, o crea una automatización en la app Atajos.',
+      'Band & Bloom no manda notificaciones propias: si la abres después de tu hora de recordatorio, verás un aviso dentro de la app. Si usas Mi Semana con las notificaciones activadas (la campana 🔔), te avisa a las 11 p. m. cuando no has hecho ejercicio, aunque todo esté cerrado. Otra opción es agregar el recordatorio a tu calendario desde Más → Recordatorios, o crear una automatización en la app Atajos.',
   },
   {
     question: '¿Puedo cambiar mis días de entrenamiento?',

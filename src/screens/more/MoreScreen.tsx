@@ -65,6 +65,7 @@ export function MoreScreen() {
     {
       title: 'App',
       rows: [
+        { section: 'instalar', emoji: 'sparkles', tone: 'lavender', title: 'Instalar la app', subtitle: 'En tu teléfono o computadora' },
         { section: 'datos', emoji: 'floppy-disk', tone: 'sage', title: 'Mis datos', subtitle: 'Cuenta, respaldo o borrar' },
         { section: 'acerca', emoji: 'purple-heart', tone: 'rose', title: 'Sobre la app', subtitle: `Versión ${APP_VERSION}` },
       ],

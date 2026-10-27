@@ -61,7 +61,7 @@ export function ExerciseTimer({ title, phases, doneMessage, options, autoStart, 
   // Con `autoStart`, vuelve a arrancar solo con la nueva duración.
   useEffect(() => {
     dispatch({ type: 'reset' })
-    if (autoStart) dispatch({ type: 'start', now: Date.now() })
+    if (autoStart) dispatch({ type: 'start', now: Date.now(), skipPrep: true })
   }, [phases, autoStart])
 
   // Mientras corre, revisamos la hora varias veces por segundo y al volver a la app.
@@ -160,7 +160,8 @@ export function ExerciseTimer({ title, phases, doneMessage, options, autoStart, 
               key={option.label}
               type="button"
               aria-pressed={option.selected}
-              disabled={active}
+              // En un descanso que arranca solo, cambiar la duración lo reinicia con el nuevo tiempo.
+              disabled={active && !autoStart}
               onClick={option.onSelect}
               className={cn(
                 'min-h-10 rounded-full text-sm font-semibold transition-colors disabled:opacity-50',

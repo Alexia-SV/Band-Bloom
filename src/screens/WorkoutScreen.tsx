@@ -19,22 +19,25 @@ import { useAppData } from '../state/useAppData'
 import { useWakeLock } from '../state/useWakeLock'
 import type { RoutineId, WorkoutSession } from '../types'
 
-/** Entrenamiento a medias, para retomarlo si sales de la app (en iPhone pasa seguido). */
-const PROGRESS_KEY = `${STORAGE_KEY}:entreno`
+/**
+ * Entrenamiento a medias, para retomarlo si sales de la app (en iPhone pasa seguido).
+ * Uno por rutina: abrir otra rutina no borra el avance de la que dejaste a medias.
+ */
+const progressKey = (routineId: RoutineId) => `${STORAGE_KEY}:entreno:${routineId}`
 
 function loadProgress(routineId: RoutineId, stepCount: number): WorkoutProgress | null {
   try {
-    const raw = window.localStorage.getItem(PROGRESS_KEY)
+    const raw = window.localStorage.getItem(progressKey(routineId))
     return raw ? resumableProgress(JSON.parse(raw), routineId, new Date(), stepCount) : null
   } catch {
     return null
   }
 }
 
-function saveProgress(progress: WorkoutProgress | null): void {
+function saveProgress(routineId: RoutineId, progress: WorkoutProgress | null): void {
   try {
-    if (progress) window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress))
-    else window.localStorage.removeItem(PROGRESS_KEY)
+    if (progress) window.localStorage.setItem(progressKey(routineId), JSON.stringify(progress))
+    else window.localStorage.removeItem(progressKey(routineId))
   } catch {
     // Sin almacenamiento: el entrenamiento sigue, solo no se puede retomar.
   }
@@ -179,7 +182,10 @@ function Summary({ session, onSaveNote }: { session: WorkoutSession; onSaveNote:
           {session.completedSets.length > 0 && ` · ${session.completedSets.length} series`}
         </p>
         {completed && account.email && (
-          <p className="mt-2 text-sm font-semibold text-sage-700">Se marcó «Hacer ejercicio» en Mi Semana 💪</p>
+          <p className="mt-2 text-sm font-semibold text-sage-700">
+            «Hacer ejercicio» se palomea en Mi Semana 💪
+            {account.status === 'offline' && ' en cuanto vuelva el internet'}
+          </p>
         )}
         {!completed && <p className="mt-2 text-sm text-ink-500">Lo que hiciste cuenta. Parar a tiempo también es cuidarte.</p>}
       </div>
@@ -248,8 +254,8 @@ export function WorkoutScreen({ routineId }: { routineId: RoutineId }) {
   useWakeLock(!session)
 
   useEffect(() => {
-    saveProgress(session ? null : progress)
-  }, [progress, session])
+    saveProgress(routineId, session ? null : progress)
+  }, [progress, session, routineId])
 
   function finish(status: WorkoutSession['status'], completedSets = progress.completedSets) {
     const done = buildSession({ id: createId(), routineId, startedAt: progress.startedAt, endedAt: new Date(), completedSets, status })
@@ -287,7 +293,7 @@ export function WorkoutScreen({ routineId }: { routineId: RoutineId }) {
 
   function endNow() {
     if (progress.completedSets.length === 0) {
-      saveProgress(null)
+      saveProgress(routineId, null)
       goBack({ name: 'routine', id: routineId })
       return
     }

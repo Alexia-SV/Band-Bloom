@@ -8,6 +8,7 @@ import { AboutScreen } from './screens/more/AboutScreen'
 import { BandsScreen } from './screens/more/BandsScreen'
 import { DataScreen } from './screens/more/DataScreen'
 import { FaqScreen } from './screens/more/FaqScreen'
+import { InstallScreen } from './screens/more/InstallScreen'
 import { MoreScreen } from './screens/more/MoreScreen'
 import { NotesScreen } from './screens/more/NotesScreen'
 import { PreferencesScreen } from './screens/more/PreferencesScreen'
@@ -30,6 +31,7 @@ const MORE_SCREENS: Record<MoreSection, () => ReactNode> = {
   consejos: () => <TipsScreen />,
   preguntas: () => <FaqScreen />,
   datos: () => <DataScreen />,
+  instalar: () => <InstallScreen />,
   acerca: () => <AboutScreen />,
 }
 

@@ -106,6 +106,13 @@ describe('timerReducer', () => {
     expect(s.status).toBe('done')
   })
 
+  it('sin preparación (descansos): cuenta desde el primer momento', () => {
+    let s = run(initialTimerState(phases), { type: 'start', now: 0, skipPrep: true })
+    expect(s).toMatchObject({ status: 'running', phaseIndex: 0, remainingMs: 30_000 })
+    s = run(s, { type: 'tick', now: 60_000 })
+    expect(s.status).toBe('done')
+  })
+
   it('pausar conserva el tiempo restante y reanudar continúa desde ahí', () => {
     let s = run(initialTimerState(phases), { type: 'start', now: 0 })
     s = run(s, { type: 'tick', now: prepMs + 10_000 })

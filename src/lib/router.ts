@@ -13,6 +13,7 @@ export const MORE_SECTIONS = [
   'consejos',
   'preguntas',
   'datos',
+  'instalar',
   'acerca',
 ] as const
 export type MoreSection = (typeof MORE_SECTIONS)[number]
