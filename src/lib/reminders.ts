@@ -1,6 +1,6 @@
 import { reminderText } from '../data/reminders'
 import type { AppData, ReminderSettings, TimeOfDay, WeekdayKey } from '../types'
-import { addDays, toISODate, WEEK_ORDER, weekdayKey } from './dates'
+import { addDays, DAY_START_HOUR, dayOf, toISODate, WEEK_ORDER, weekdayKey } from './dates'
 
 /** "21:00" → minutos desde la medianoche. */
 function toMinutes(time: TimeOfDay): number {
@@ -34,17 +34,24 @@ export function describeDays(days: WeekdayKey[]): string {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
+/** Minutos desde que empieza el día (4 a. m.): 4:00 → 0, 9:00 p. m. → 1020, 12:30 a. m. → 1230. */
+function minutesIntoDay(totalMinutes: number): number {
+  return (totalMinutes - DAY_START_HOUR * 60 + 24 * 60) % (24 * 60)
+}
+
 /**
  * ¿Mostrar hoy el aviso dentro de la app?
  * Solo si está activado, hoy es uno de los días elegidos, ya pasó la hora,
  * no se cerró hoy y todavía no hay actividad registrada (ni descanso marcado).
+ * El día cambia a las 4 a. m.: a las 12:30 a. m. sigue contando el día anterior.
  */
 export function shouldShowReminder(data: AppData, now: Date): boolean {
   const { reminders } = data
-  const today = toISODate(now)
+  const day = dayOf(now)
+  const today = toISODate(day)
   if (!reminders.enabled) return false
-  if (!reminders.days.includes(weekdayKey(now))) return false
-  if (now.getHours() * 60 + now.getMinutes() < toMinutes(reminders.time)) return false
+  if (!reminders.days.includes(weekdayKey(day))) return false
+  if (minutesIntoDay(now.getHours() * 60 + now.getMinutes()) < minutesIntoDay(toMinutes(reminders.time))) return false
   if (reminders.lastDismissedOn === today) return false
   if (data.restDays.includes(today)) return false
   return !data.sessions.some((session) => session.date === today && session.status === 'completed')

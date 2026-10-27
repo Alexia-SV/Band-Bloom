@@ -2,7 +2,7 @@ import type { Session } from '@supabase/supabase-js'
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { DEFAULT_WEEKLY_PLAN } from '../data/weeklyPlan'
 import { deleteCloudData, fetchCloud, markExerciseInMiSemana, pushDatos, pushSessions } from '../lib/cloud'
-import { toISODate } from '../lib/dates'
+import { dayOf, toISODate } from '../lib/dates'
 import { createId } from '../lib/id'
 import { miSemanaDay } from '../lib/miSemana'
 import { MAX_TRAINING_DAYS, planFromTrainingDays } from '../lib/onboarding'
@@ -152,9 +152,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       current.restDays.includes(date) ? current : { ...current, restDays: [...current.restDays, date] },
     )
     // Con cuenta, el descanso de hoy también cuenta en Mi Semana (sin romper la racha).
-    const now = new Date()
-    if (userIdRef.current && date === toISODate(now)) {
-      void markExerciseInMiSemana(miSemanaDay(now), 'rest').catch(() => {})
+    // Las dos apps cambian de día a las 4 a. m., así que es el mismo día en ambas.
+    if (userIdRef.current && date === miSemanaDay(new Date())) {
+      void markExerciseInMiSemana(date, 'rest').catch(() => {})
     }
   }, [])
 
@@ -195,7 +195,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setData((current) => {
       const preferences = { ...current.preferences, ...patch }
       // Al activar el plan para principiantes, sus dos semanas empiezan hoy.
-      if (patch.beginnerPlan && !current.preferences.beginnerPlan) preferences.beginnerPlanStartedOn = toISODate(new Date())
+      if (patch.beginnerPlan && !current.preferences.beginnerPlan) preferences.beginnerPlanStartedOn = toISODate(dayOf(new Date()))
       return { ...current, preferences }
     })
   }, [])
@@ -219,7 +219,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           weeklyStrengthGoal: days.length > 0 ? days.length : current.preferences.weeklyStrengthGoal,
           preferredSession: choices.preferredSession,
           beginnerPlan: choices.beginnerPlan,
-          ...(choices.beginnerPlan ? { beginnerPlanStartedOn: toISODate(new Date()) } : {}),
+          ...(choices.beginnerPlan ? { beginnerPlanStartedOn: toISODate(dayOf(new Date())) } : {}),
           onboardingCompleted: true,
         },
         reminders: { ...current.reminders, time: choices.reminderTime, enabled: choices.remindersEnabled },

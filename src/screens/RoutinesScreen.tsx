@@ -6,7 +6,7 @@ import { SegmentedTabs } from '../components/ui/SegmentedTabs'
 import { getRoutine, ROUTINES } from '../data/routines'
 import { capitalize, isInSameWeek, WEEK_ORDER, WEEKDAY_NAME } from '../lib/dates'
 import { useAppData } from '../state/useAppData'
-import { useNow } from '../state/useNow'
+import { useDay } from '../state/useNow'
 import type { RoutineId } from '../types'
 
 type View = 'week' | 'all' | 'favorites'
@@ -19,7 +19,7 @@ const VIEWS: Array<{ value: View; label: string }> = [
 
 export function RoutinesScreen() {
   const { data } = useAppData()
-  const now = useNow()
+  const now = useDay()
   const [view, setView] = useState<View>('week')
   const panelId = useId()
 

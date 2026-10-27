@@ -19,7 +19,7 @@ import {
   weeklyStrengthCounts,
 } from '../lib/progress'
 import { useAppData } from '../state/useAppData'
-import { useNow } from '../state/useNow'
+import { useDay } from '../state/useNow'
 
 type View = 'week' | 'month' | 'total'
 
@@ -47,7 +47,7 @@ function Encouragement() {
 
 export function ProgressScreen() {
   const { data } = useAppData()
-  const now = useNow()
+  const now = useDay()
   const today = toISODate(now)
   const [view, setView] = useState<View>('week')
   // Mes visible en la vista "Mes": desplazamiento respecto al mes actual (0 = este mes).

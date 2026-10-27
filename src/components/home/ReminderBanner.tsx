@@ -1,6 +1,6 @@
 import { BellRing, Flower2, Moon, Timer, X } from 'lucide-react'
 import { reminderText } from '../../data/reminders'
-import { toISODate } from '../../lib/dates'
+import { dayOf, toISODate } from '../../lib/dates'
 import { shouldShowReminder } from '../../lib/reminders'
 import { routeHref } from '../../lib/router'
 import { useAppData } from '../../state/useAppData'
@@ -14,7 +14,7 @@ export function ReminderBanner() {
   const { data, markRestDay, dismissReminder } = useAppData()
   const now = useNow()
   if (!shouldShowReminder(data, now)) return null
-  const today = toISODate(now)
+  const today = toISODate(dayOf(now))
 
   const action =
     'inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white px-3 text-sm font-semibold text-ink-900 ring-1 ring-bloom-200 transition hover:bg-bloom-50'

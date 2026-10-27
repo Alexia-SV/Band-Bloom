@@ -28,6 +28,17 @@ export const WEEKDAY_NAME: Record<WeekdayKey, string> = {
   sun: 'domingo',
 }
 
+/**
+ * El día cambia a las 4 a. m., igual que en Mi Semana: lo que haces a las 12:30 a. m.
+ * (entrenar, marcar descanso) todavía cuenta para el día anterior.
+ */
+export const DAY_START_HOUR = 4
+
+/** Fecha y hora "del día" para `now`: entre medianoche y las 4 a. m. todavía es el día anterior. */
+export function dayOf(now: Date): Date {
+  return new Date(now.getTime() - DAY_START_HOUR * 3_600_000)
+}
+
 function pad(value: number): string {
   return String(value).padStart(2, '0')
 }

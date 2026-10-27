@@ -129,7 +129,7 @@ src/
 - **Router por hash** (`#/rutinas`): no hace falta una librería ni configurar el servidor, y funciona igual sin conexión.
 - **localStorage con validación** (también como copia local cuando hay cuenta): si los datos guardados están dañados, la app no se rompe. Guarda un respaldo y empieza de cero avisándote.
 - **La recomendación es una función pura** (`buildDashboard`): recibe datos y fecha, y devuelve qué mostrar. Por eso se puede probar sin navegador.
-- **Fechas locales**: los días se guardan como `YYYY-MM-DD` según tu zona horaria, no en UTC, para que un entrenamiento a las 11 p. m. no aparezca en el día siguiente.
+- **Fechas locales**: los días se guardan como `YYYY-MM-DD` según tu zona horaria, no en UTC, para que un entrenamiento a las 11 p. m. no aparezca en el día siguiente. Además el día cambia a las **4 a. m.** (igual que en Mi Semana, `dayOf` en `dates.ts`): entrenar o marcar descanso a las 12:30 a. m. cuenta para el día anterior.
 
 ## Estado por etapas
 

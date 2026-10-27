@@ -1,5 +1,5 @@
 import type { ISODate } from '../types'
-import { addDays, parseISODate, toISODate } from './dates'
+import { addDays, dayOf, parseISODate, toISODate } from './dates'
 
 /** Pendiente de Mi Semana (tabla `tareas`), solo con los campos que usamos aquí. */
 export interface MiSemanaTask {
@@ -19,9 +19,9 @@ export const EXERCISE_HABIT = { area: 'casa', sub: 'Ejercicio' } as const
 /** La misma nota que pone "Hoy descanso" en Mi Semana: cuenta como descanso y no rompe la racha. */
 export const REST_NOTE = 'Hoy fue descanso 🌙'
 
-/** Mi Semana cambia de día a las 4 a. m.: entrenar a las 12:30 a. m. cuenta para el día anterior. */
+/** Mi Semana (y Band & Bloom) cambian de día a las 4 a. m.: entrenar a las 12:30 a. m. cuenta para el día anterior. */
 export function miSemanaDay(now: Date): ISODate {
-  return toISODate(new Date(now.getTime() - 4 * 3_600_000))
+  return toISODate(dayOf(now))
 }
 
 /** Lunes = 0 … domingo = 6, como guarda Mi Semana los días que se repite. */

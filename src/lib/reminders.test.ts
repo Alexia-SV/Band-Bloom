@@ -21,6 +21,18 @@ describe('shouldShowReminder', () => {
     expect(shouldShowReminder(data, at(23, 30))).toBe(true)
   })
 
+  it('el día cambia a las 4 a. m.: a las 12:30 a. m. sigue siendo el lunes', () => {
+    const madrugada = new Date(2026, 9, 20, 0, 30) // martes 20, 12:30 a. m.
+    expect(shouldShowReminder(createDefaultAppData(), madrugada)).toBe(true)
+    // Lo que se marcó el lunes cuenta para esa madrugada…
+    expect(shouldShowReminder(withData((d) => (d.restDays = ['2026-10-19'])), madrugada)).toBe(false)
+    expect(shouldShowReminder(withData((d) => (d.reminders.lastDismissedOn = '2026-10-19')), madrugada)).toBe(false)
+    // …y los días elegidos se revisan con el lunes, no con el martes.
+    expect(shouldShowReminder(withData((d) => (d.reminders.days = ['tue'])), madrugada)).toBe(false)
+    // A las 4 a. m. ya es martes y todavía no llega la hora.
+    expect(shouldShowReminder(createDefaultAppData(), new Date(2026, 9, 20, 4, 0))).toBe(false)
+  })
+
   it('respeta desactivar, días elegidos y "Ahora no"', () => {
     expect(shouldShowReminder(withData((d) => (d.reminders.enabled = false)), at(22))).toBe(false)
     expect(shouldShowReminder(withData((d) => (d.reminders.days = ['wed', 'fri'])), at(22))).toBe(false)

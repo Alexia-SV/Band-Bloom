@@ -8,7 +8,7 @@ import { WeekStrip } from '../components/home/WeekStrip'
 import { Card } from '../components/ui/Card'
 import { Emoji } from '../components/ui/Emoji'
 import { messageForDate } from '../data/messages'
-import { formatLongDate, parseISODate, toISODate } from '../lib/dates'
+import { dayOf, formatLongDate, parseISODate, toISODate } from '../lib/dates'
 import { buildDashboard } from '../lib/recommendation'
 import { useAppData } from '../state/useAppData'
 import { useNow } from '../state/useNow'
@@ -16,7 +16,8 @@ import { useNow } from '../state/useNow'
 export function HomeScreen() {
   const { data, markRestDay, clearRestDay } = useAppData()
   const now = useNow()
-  const today = toISODate(now)
+  // El día cambia a las 4 a. m.: a las 12:30 a. m. Inicio sigue mostrando el día anterior.
+  const today = toISODate(dayOf(now))
   // `day` solo cambia cuando cambia la fecha, así no recalculamos cada minuto.
   const day = useMemo(() => parseISODate(today), [today])
   const summary = useMemo(() => buildDashboard(data, day), [data, day])
