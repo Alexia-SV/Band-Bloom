@@ -17,6 +17,7 @@ import { TipsScreen } from './screens/more/TipsScreen'
 import { ProgressScreen } from './screens/ProgressScreen'
 import { RoutinePreviewScreen } from './screens/RoutinePreviewScreen'
 import { RoutinesScreen } from './screens/RoutinesScreen'
+import { WorkoutScreen } from './screens/WorkoutScreen'
 import { IllustrationGallery } from './screens/dev/IllustrationGallery'
 import { useAppData } from './state/useAppData'
 
@@ -47,6 +48,9 @@ export default function App() {
 
   // Primer uso (o "Repetir configuración inicial"): mostramos el onboarding en lugar de la app.
   if (!data.preferences.onboardingCompleted) return <OnboardingScreen />
+
+  // El entrenamiento guiado ocupa toda la pantalla, sin barra de navegación, para no distraerte.
+  if (route.name === 'workout') return <WorkoutScreen key={routeKey} routineId={route.routineId} />
 
   let screen: ReactNode
   switch (route.name) {

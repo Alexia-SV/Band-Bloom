@@ -62,6 +62,14 @@ Las imágenes son **dibujos originales en SVG** generados por código, sin fotos
 - **Fotos de portada:** 5 fotos de [Pexels](https://www.pexels.com/license/) (uso gratuito, sin atribución obligatoria; igual damos crédito en *Sobre la app*). Están en `src/assets/covers/` como WebP (~205 KB en total) y sus autores y enlaces en `src/data/covers.ts`.
 - Todo se incluye en la app (no se carga de internet), así funcionará sin conexión cuando la PWA esté lista.
 
+## Entrenamiento guiado
+
+- Ruta `#/rutinas/<id>/entrenar` (botón *Empezar rutina* y *Comenzar* en Inicio). Ocupa toda la pantalla, sin barra de navegación, y mantiene la pantalla encendida.
+- `src/lib/workout.ts` arma el recorrido (con pruebas): calentamiento seguido, luego cada serie con su descanso (el de cada ejercicio, por ejemplo 60–90 s) y sin descanso al final. La movilidad no lleva descansos.
+- El descanso arranca solo y, al terminar, pasa a la siguiente serie. Se puede saltar, regresar con *Anterior* o terminar antes.
+- El avance se guarda en `band-and-bloom:data:entreno`: si sales de la app (en iPhone pasa seguido) se retoma al volver, hasta 3 horas después.
+- Al terminar se guarda la sesión con `addSession` (`completed` o `ended-early` si terminas antes con al menos una serie). Con cuenta se sube a `bb_sesiones` y se palomea *Hacer ejercicio* en Mi Semana. El día de la sesión cambia a las 4 a. m.
+
 ## Temporizador de ejercicios
 
 - `src/lib/timer.ts` convierte el objetivo escrito en fases exactas: "30 s por lado" → 2 × 30 s; "15 s por dirección, cada pie" → 4 × 15 s; "20 s atrás + 20 s adelante" → 2 fases.
@@ -136,8 +144,8 @@ src/
 - [x] Etapa 1: proyecto, arquitectura y pantalla Inicio funcional
 - [x] Etapa 2: sistema de diseño completo y pantallas Rutinas, Progreso y Más
 - [x] Etapa 3: base de ejercicios con instrucciones, ilustraciones originales y calentamiento por rutina
-- [ ] Etapa 4: entrenamiento guiado (series, descansos, pausa)
-- [ ] Etapa 5: guardar sesiones de entrenamiento (la pantalla de progreso y la exportación JSON ya existen)
+- [x] Etapa 4: entrenamiento guiado (series, descansos, pausa)
+- [x] Etapa 5: guardar sesiones de entrenamiento (en el dispositivo y, con cuenta, en Supabase)
 - [ ] Etapa 6: PWA instalable y offline
 - [x] Etapa 7: recordatorios (aviso dentro de la app, evento de calendario .ics, guía de Atajos) y onboarding
 - [ ] Etapa 8: verificación final y guía de instalación

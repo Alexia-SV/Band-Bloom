@@ -34,6 +34,8 @@ export type Route =
   | { name: 'more-section'; section: MoreSection }
   /** Detalle de un ejercicio dentro de una rutina. `index` empieza en 0. */
   | { name: 'exercise'; routineId: RoutineId; part: ExercisePart; index: number }
+  /** Entrenamiento guiado: serie por serie, con descansos. */
+  | { name: 'workout'; routineId: RoutineId }
 
 export type ExercisePart = 'warmup' | 'main'
 
@@ -50,6 +52,7 @@ export function parseHash(hash: string): Route {
     case 'rutinas': {
       if (!parts[1] || !isRoutineId(parts[1])) return { name: 'routines' }
       const routineId = parts[1]
+      if (parts[2] === 'entrenar') return { name: 'workout', routineId }
       const part: ExercisePart | null =
         parts[2] === 'ejercicio' ? 'main' : parts[2] === 'calentamiento' ? 'warmup' : null
       const index = Number(parts[3]) - 1
@@ -84,6 +87,8 @@ export function routeHref(route: Route): string {
       return `#/mas/${route.section}`
     case 'exercise':
       return `#/rutinas/${route.routineId}/${route.part === 'main' ? 'ejercicio' : 'calentamiento'}/${route.index + 1}`
+    case 'workout':
+      return `#/rutinas/${route.routineId}/entrenar`
   }
 }
 

@@ -12,6 +12,7 @@ import {
   type TimerState,
 } from '../../lib/timer'
 import { cn } from '../../lib/tones'
+import { useWakeLock } from '../../state/useWakeLock'
 
 const SOUND_KEY = 'band-and-bloom:timer-sound'
 
@@ -23,28 +24,6 @@ function readSoundPreference(): boolean {
   }
 }
 
-/** Mantiene la pantalla encendida mientras corre el tiempo, si el navegador lo permite. */
-function useWakeLock(active: boolean) {
-  useEffect(() => {
-    if (!active || !('wakeLock' in navigator)) return
-    let lock: WakeLockSentinel | null = null
-    let cancelled = false
-    navigator.wakeLock
-      .request('screen')
-      .then((sentinel) => {
-        if (cancelled) void sentinel.release()
-        else lock = sentinel
-      })
-      .catch(() => {
-        // Sin permiso o sin soporte: el temporizador funciona igual.
-      })
-    return () => {
-      cancelled = true
-      void lock?.release()
-    }
-  }, [active])
-}
-
 interface ExerciseTimerProps {
   title: string
   phases: TimerPhase[]
@@ -52,13 +31,17 @@ interface ExerciseTimerProps {
   doneMessage: string
   /** Opciones de duración (por ejemplo, descanso de 60 o 90 s). */
   options?: { label: string; selected: boolean; onSelect: () => void }[]
+  /** Arranca solo al aparecer (por ejemplo, el descanso entre series del entrenamiento guiado). */
+  autoStart?: boolean
+  /** Se llama cuando el tiempo termina solo. */
+  onDone?: () => void
 }
 
 const RING_RADIUS = 64
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS
 
 /** Temporizador con las fases exactas del ejercicio: preparar 3 s, contar, avisar con sonido y terminar. */
-export function ExerciseTimer({ title, phases, doneMessage, options }: ExerciseTimerProps) {
+export function ExerciseTimer({ title, phases, doneMessage, options, autoStart, onDone }: ExerciseTimerProps) {
   const reducer = useMemo(() => (state: TimerState, action: TimerAction) => timerReducer(phases, state, action), [phases])
   const [state, dispatch] = useReducer(reducer, phases, initialTimerState)
   const [now, setNow] = useState(() => Date.now())
@@ -69,10 +52,17 @@ export function ExerciseTimer({ title, phases, doneMessage, options }: ExerciseT
   const active = state.status === 'running' || state.status === 'prep'
   useWakeLock(active)
 
+  const onDoneRef = useRef(onDone)
+  useEffect(() => {
+    onDoneRef.current = onDone
+  }, [onDone])
+
   // Reinicia si cambian las fases (por ejemplo, al elegir 60 o 90 s de descanso).
+  // Con `autoStart`, vuelve a arrancar solo con la nueva duración.
   useEffect(() => {
     dispatch({ type: 'reset' })
-  }, [phases])
+    if (autoStart) dispatch({ type: 'start', now: Date.now() })
+  }, [phases, autoStart])
 
   // Mientras corre, revisamos la hora varias veces por segundo y al volver a la app.
   useEffect(() => {
@@ -103,6 +93,7 @@ export function ExerciseTimer({ title, phases, doneMessage, options }: ExerciseT
     } else if (state.status === 'done' && before.status !== 'done') {
       if (soundOn) playDoneSound()
       setAnnouncement(doneMessage)
+      onDoneRef.current?.()
     }
   }, [state, phases, soundOn, doneMessage])
 

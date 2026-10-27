@@ -1,6 +1,7 @@
-import { ArrowLeft, Info, Timer } from 'lucide-react'
+import { ArrowLeft, Info, Play, Timer } from 'lucide-react'
 import { ExerciseListItem } from '../components/exercise/ExerciseListItem'
 import { ROUTINE_EMOJI } from '../components/routineIcons'
+import { LinkButton } from '../components/ui/Buttons'
 import { Emoji } from '../components/ui/Emoji'
 import { Card } from '../components/ui/Card'
 import { FavoriteButton } from '../components/ui/FavoriteButton'
@@ -52,6 +53,10 @@ export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
           </p>
         </div>
       </header>
+
+      <LinkButton href={routeHref({ name: 'workout', routineId })} icon={Play} className="w-full sm:w-auto">
+        Empezar rutina
+      </LinkButton>
 
       <dl className="grid gap-3 sm:grid-cols-2">
         <Card className="p-4">
@@ -123,8 +128,8 @@ export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
       <Card tone="lavender" className="flex gap-3 p-4">
         <Info size={20} className="mt-0.5 shrink-0 text-bloom-700" aria-hidden="true" />
         <p className="text-sm text-ink-700">
-          Toca cualquier ejercicio para ver cómo se hace. Pronto podrás iniciar la rutina guiada con series, descansos y
-          temporizador.
+          Toca cualquier ejercicio para ver cómo se hace. Con <strong>Empezar rutina</strong> te guiamos serie por
+          serie, con descansos y temporizador.
         </p>
       </Card>
     </div>

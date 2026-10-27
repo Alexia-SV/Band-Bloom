@@ -20,7 +20,8 @@ interface TodayCardProps {
   onUndoRest: () => void
 }
 
-const MOBILITY_HREF = routeHref({ name: 'routine', id: 'mobility' })
+// Los botones de "Comenzar" llevan directo al entrenamiento guiado.
+const MOBILITY_HREF = routeHref({ name: 'workout', routineId: 'mobility' })
 
 function NextSessionLine({ next }: { next: DashboardSummary['nextSession'] }) {
   if (!next) return null
@@ -116,7 +117,7 @@ export function TodayCard({ summary, now, onMarkRest, onUndoRest }: TodayCardPro
             </span>
           </a>
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <LinkButton href={routeHref({ name: 'routine', id: routine.id })} icon={Play} className="w-full sm:w-auto">
+            <LinkButton href={routeHref({ name: 'workout', routineId: routine.id })} icon={Play} className="w-full sm:w-auto">
               Comenzar
             </LinkButton>
             <SecondaryButton onClick={onMarkRest} icon={Moon}>
