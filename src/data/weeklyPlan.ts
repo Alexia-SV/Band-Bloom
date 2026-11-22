@@ -12,3 +12,19 @@ export const DEFAULT_WEEKLY_PLAN: WeeklyPlan = {
 }
 
 export const DEFAULT_WEEKLY_STRENGTH_GOAL = 3
+
+/**
+ * Plan para entrenar diario sin repetir el mismo grupo dos días seguidos:
+ * piernas → tren superior → cardio → cuerpo completo → core → glúteos → movilidad.
+ */
+export const DAILY_WEEKLY_PLAN: WeeklyPlan = {
+  mon: { type: 'strength', routineId: 'a' },
+  tue: { type: 'strength', routineId: 'b' },
+  wed: { type: 'strength', routineId: 'd' },
+  thu: { type: 'strength', routineId: 'c' },
+  fri: { type: 'strength', routineId: 'f' },
+  sat: { type: 'strength', routineId: 'e' },
+  sun: { type: 'mobility-optional' },
+}
+
+export const DAILY_WEEKLY_GOAL = 6

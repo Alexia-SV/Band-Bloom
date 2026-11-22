@@ -50,7 +50,7 @@ function propExtents(prop: IllustrationProp, j: Joints): Point[] {
   }
   if (prop.type === 'chair') {
     const at = jointAt(j, prop.at)
-    return [{ x: at.x + 36, y: 0 }]
+    return prop.behind ? [{ x: at.x - 36, y: at.y - 34 }] : [{ x: at.x + 36, y: 0 }]
   }
   if (prop.type === 'circle') {
     const at = jointAt(j, prop.at)
@@ -272,6 +272,19 @@ function BackgroundProps({ props, j, bounds }: { props: IllustrationProp[]; j: J
         if (prop.type === 'wall') {
           const at = jointAt(j, prop.at)
           return <rect key={index} x={at.x + 5} y={bounds.minY - 40} width={11} height={-bounds.minY + 40} rx={2} fill={COLORS.prop} />
+        }
+        if (prop.type === 'chair' && prop.behind) {
+          // Silla detrás: las manos van en la orilla del asiento y el respaldo queda atrás.
+          const at = jointAt(j, prop.at)
+          const x = at.x + 6
+          const seatY = at.y + 5
+          return (
+            <g key={index} stroke={COLORS.propDark} strokeWidth={5} strokeLinecap="round" fill="none">
+              <line x1={x} y1={seatY} x2={x} y2={0} />
+              <line x1={x} y1={seatY} x2={x - 30} y2={seatY} />
+              <line x1={x - 30} y1={seatY - 34} x2={x - 30} y2={0} />
+            </g>
+          )
         }
         if (prop.type === 'chair') {
           const at = jointAt(j, prop.at)

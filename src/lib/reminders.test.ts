@@ -105,9 +105,15 @@ describe('onboarding', () => {
     expect(plan.sun).toEqual({ type: 'rest' })
   })
 
-  it('con dos días usa A y B; con cuatro repite A', () => {
+  it('con dos días usa A y B; con más de tres suma cardio, core y glúteos', () => {
     expect(planFromTrainingDays(['tue', 'thu']).thu).toEqual({ type: 'strength', routineId: 'b' })
-    expect(planFromTrainingDays(['mon', 'tue', 'thu', 'sat']).sat).toEqual({ type: 'strength', routineId: 'a' })
+    const four = planFromTrainingDays(['mon', 'tue', 'thu', 'sat'])
+    expect([four.mon, four.tue, four.thu, four.sat]).toEqual([
+      { type: 'strength', routineId: 'a' },
+      { type: 'strength', routineId: 'b' },
+      { type: 'strength', routineId: 'd' },
+      { type: 'strength', routineId: 'c' },
+    ])
   })
 
   it('detecta días seguidos', () => {

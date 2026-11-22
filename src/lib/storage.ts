@@ -1,5 +1,5 @@
 import { CUSTOM_MESSAGE_MAX_LENGTH, DEFAULT_REMINDERS } from '../data/reminders'
-import { isRoutineId } from '../data/routines'
+import { isRoutineId, isStrengthRoutineId } from '../data/routines'
 import { DEFAULT_WEEKLY_PLAN, DEFAULT_WEEKLY_STRENGTH_GOAL } from '../data/weeklyPlan'
 import type {
   AppData,
@@ -62,7 +62,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function sanitizeSlot(value: unknown): PlanSlot | null {
   if (!isRecord(value)) return null
   if (value.type === 'rest' || value.type === 'mobility-optional') return { type: value.type }
-  if (value.type === 'strength' && (value.routineId === 'a' || value.routineId === 'b' || value.routineId === 'c')) {
+  if (value.type === 'strength' && typeof value.routineId === 'string' && isStrengthRoutineId(value.routineId)) {
     return { type: 'strength', routineId: value.routineId }
   }
   return null

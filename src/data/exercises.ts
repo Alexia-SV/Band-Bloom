@@ -1,4 +1,5 @@
 import type { Exercise } from '../types'
+import { MORE_EXERCISES } from './exercisesMore'
 
 const PINK = 'Liga rosa (Light)'
 const NO_BAND = 'Sin liga'
@@ -242,6 +243,8 @@ export const EXERCISES: Exercise[] = [
     progression: 'Mantén 5 segundos en cada repetición.',
     beginnerFriendly: true,
   },
+
+  ...MORE_EXERCISES,
 
   // ——— Movilidad ———
   {

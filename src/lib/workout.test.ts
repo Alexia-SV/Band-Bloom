@@ -3,19 +3,23 @@ import { parseHash, routeHref } from './router'
 import { buildSession, buildWorkout, resumableProgress, RESUME_WINDOW_MS, sessionDate } from './workout'
 
 describe('buildWorkout', () => {
-  it('rutina A: 6 de calentamiento, 4 ejercicios × 2 series y descanso entre series', () => {
+  it('rutina A: 6 de calentamiento, 5 ejercicios × 3 series y descanso entre series', () => {
     const steps = buildWorkout('a')
-    expect(steps).toHaveLength(6 + 8 + 7)
+    expect(steps).toHaveLength(6 + 15 + 14)
     // El calentamiento va seguido, sin descansos.
     expect(steps.slice(0, 6).every((s) => s.kind === 'exercise' && s.part === 'warmup')).toBe(true)
     // Primera serie, descanso y la segunda serie del mismo ejercicio.
-    expect(steps[6]).toMatchObject({ kind: 'exercise', part: 'main', exerciseId: 'band-squat', set: 1, sets: 2, position: 1, total: 4 })
-    expect(steps[7]).toMatchObject({ kind: 'rest', next: { exerciseId: 'band-squat', set: 2, sets: 2 } })
+    // La sentadilla de la rutina A va con liga morada y pausa abajo.
+    expect(steps[6]).toMatchObject({
+      kind: 'exercise', part: 'main', exerciseId: 'band-squat', set: 1, sets: 3, position: 1, total: 5, band: 'purple', cue: 'Pausa 2 s abajo',
+    })
+    expect(steps[7]).toMatchObject({ kind: 'rest', next: { exerciseId: 'band-squat', set: 2, sets: 3 } })
     expect(steps[8]).toMatchObject({ kind: 'exercise', exerciseId: 'band-squat', set: 2 })
+    expect(steps[10]).toMatchObject({ kind: 'exercise', exerciseId: 'band-squat', set: 3 })
     // Después de la última serie, el descanso anuncia el siguiente ejercicio.
-    expect(steps[9]).toMatchObject({ kind: 'rest', next: { exerciseId: 'band-glute-bridge', set: 1 } })
+    expect(steps[11]).toMatchObject({ kind: 'rest', next: { exerciseId: 'reverse-lunge', set: 1 } })
     // Termina con una serie, no con un descanso.
-    expect(steps[steps.length - 1]).toMatchObject({ kind: 'exercise', set: 2, position: 4 })
+    expect(steps[steps.length - 1]).toMatchObject({ kind: 'exercise', set: 3, position: 5 })
   })
 
   it('usa el descanso de cada ejercicio ("60–90 s" → 60 a 90)', () => {

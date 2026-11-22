@@ -14,7 +14,8 @@ export type IllustrationProp =
   /** Liga sujeta entre las dos manos. */
   | { type: 'band-hands' }
   | { type: 'wall'; at: JointPath }
-  | { type: 'chair'; at: JointPath }
+  /** Silla con el borde bajo la articulación; `behind` la pone detrás de la persona (fondos en silla). */
+  | { type: 'chair'; at: JointPath; behind?: boolean }
   | { type: 'mat' }
   /** Flecha circular para indicar movimientos en círculo. */
   | { type: 'circle'; at: JointPath; r: number }
@@ -122,6 +123,150 @@ export const ILLUSTRATIONS: Record<string, Illustration> = {
       side(QUAD_TORSO, { upperArm: 100, forearm: 100, ...QUAD_LEG }, { ...QUAD_ARM, thigh: -95, shin: -95, foot: -60 }),
     ],
     props: [{ type: 'mat' }],
+  },
+
+
+  // ——— Más intensos (nov 2026) ———
+  'reverse-lunge': {
+    anchor: 'near.ankle',
+    labels: ['De pie', 'Rodilla de atrás abajo'],
+    frames: [
+      side(0, { upperArm: -24, forearm: 60 }, { upperArm: -28, forearm: 56 }),
+      side(6, { upperArm: -24, forearm: 60, thigh: 85, shin: -4 }, { upperArm: -28, forearm: 56, thigh: -15, shin: -100, foot: 40 }),
+    ],
+    props: [],
+  },
+  'sumo-squat': {
+    anchor: 'near.ankle',
+    labels: ['Pies abiertos', 'Cadera abajo, rodillas afuera'],
+    frames: [
+      front({ upperArm: 32, forearm: -120, thigh: 30, shin: 30 }, { upperArm: 32, forearm: -120, thigh: 30, shin: 30 }),
+      front({ upperArm: 32, forearm: -120, thigh: 62, shin: 6 }, { upperArm: 32, forearm: -120, thigh: 62, shin: 6 }),
+    ],
+    props: [{ type: 'band-knees' }],
+  },
+  'single-leg-bridge': {
+    anchor: 'far.ankle',
+    labels: ['Una pierna estirada', 'Cadera arriba'],
+    frames: [
+      side(-90, { upperArm: 90, forearm: 90, thigh: 140, shin: 140, foot: 150 }, { upperArm: 90, forearm: 90, thigh: 140, shin: -22 }, { head: -90 }),
+      side(-110, { upperArm: 100, forearm: 92, thigh: 110, shin: 110, foot: 120 }, { upperArm: 100, forearm: 92, thigh: 100, shin: -40 }, { head: -90 }),
+    ],
+    props: [{ type: 'mat' }],
+  },
+  'donkey-kick': {
+    anchor: 'far.hand',
+    labels: ['En cuatro puntos', 'Planta hacia el techo'],
+    frames: [
+      side(QUAD_TORSO, { ...QUAD_ARM, ...QUAD_LEG }, { ...QUAD_ARM, ...QUAD_LEG }),
+      side(QUAD_TORSO, { ...QUAD_ARM, thigh: -100, shin: 175, foot: 90 }, { ...QUAD_ARM, ...QUAD_LEG }),
+    ],
+    props: [{ type: 'mat' }, { type: 'band-knees' }],
+  },
+  'lateral-band-walk': {
+    anchor: 'far.ankle',
+    labels: ['Media sentadilla', 'Paso al lado'],
+    frames: [
+      front({ upperArm: 38, forearm: -48, thigh: 14, shin: 4 }, { upperArm: 38, forearm: -48, thigh: 14, shin: 4 }),
+      front({ upperArm: 38, forearm: -48, thigh: 34, shin: 26 }, { upperArm: 38, forearm: -48, thigh: 14, shin: 4 }),
+    ],
+    props: [{ type: 'band-knees' }],
+  },
+  'incline-push-up': {
+    anchor: 'near.hand',
+    labels: ['Manos en la silla', 'Pecho al asiento'],
+    frames: [
+      side(50, { upperArm: 18, forearm: 18, thigh: -50, shin: -50, foot: 40 }, { upperArm: 14, forearm: 16, thigh: -50, shin: -50, foot: 40 }),
+      side(60, { upperArm: -40, forearm: 60, thigh: -60, shin: -60, foot: 30 }, { upperArm: -44, forearm: 56, thigh: -60, shin: -60, foot: 30 }),
+    ],
+    props: [{ type: 'chair', at: 'near.hand' }],
+  },
+  'knee-push-up': {
+    anchor: 'near.hand',
+    labels: ['Brazos estirados', 'Pecho abajo'],
+    frames: [
+      side(52, { upperArm: 0, forearm: 0, thigh: -52, shin: -92, foot: -90 }, { upperArm: 4, forearm: 2, thigh: -52, shin: -92, foot: -90 }),
+      side(72, { upperArm: -60, forearm: 62, thigh: -72, shin: -92, foot: -90 }, { upperArm: -64, forearm: 58, thigh: -72, shin: -92, foot: -90 }),
+    ],
+    props: [{ type: 'mat' }],
+  },
+  'chair-dip': {
+    anchor: 'near.hand',
+    labels: ['Brazos estirados', 'Codos atrás, cadera abajo'],
+    frames: [
+      side(0, { upperArm: -10, forearm: -10, thigh: 85, shin: 5 }, { upperArm: -10, forearm: -10, thigh: 85, shin: 5 }),
+      side(0, { upperArm: -53, forearm: 31, thigh: 106, shin: 7 }, { upperArm: -53, forearm: 31, thigh: 106, shin: 7 }),
+    ],
+    props: [{ type: 'chair', at: 'near.hand', behind: true }],
+  },
+  'band-row': {
+    anchor: 'near.ankle',
+    labels: ['Brazos al frente', 'Codos atrás'],
+    frames: [
+      side(0, { upperArm: 75, forearm: 80, thigh: 90, shin: 90, foot: 170 }, { upperArm: 71, forearm: 78, thigh: 90, shin: 90, foot: 170 }),
+      side(0, { upperArm: -25, forearm: 75, thigh: 90, shin: 90, foot: 170 }, { upperArm: -29, forearm: 71, thigh: 90, shin: 90, foot: 170 }),
+    ],
+    props: [{ type: 'mat' }, { type: 'band-feet-hands' }],
+  },
+  'band-overhead-press': {
+    anchor: 'pelvis',
+    labels: ['Manos en los hombros', 'Brazos arriba'],
+    frames: [
+      front({ upperArm: 70, forearm: 170 }, { upperArm: 70, forearm: 170 }),
+      front({ upperArm: 165, forearm: 172 }, { upperArm: 165, forearm: 172 }),
+    ],
+    props: [{ type: 'band-feet-hands' }],
+  },
+  plank: {
+    anchor: 'near.elbow',
+    labels: ['Con rodillas (más fácil)', 'Cuerpo en línea recta'],
+    frames: [
+      side(70, { upperArm: 0, forearm: 90, thigh: -70, shin: -92, foot: -90 }, { upperArm: 0, forearm: 90, thigh: -70, shin: -92, foot: -90 }),
+      side(77, { upperArm: 0, forearm: 90, thigh: -77, shin: -77, foot: 10 }, { upperArm: 0, forearm: 90, thigh: -77, shin: -77, foot: 10 }),
+    ],
+    props: [{ type: 'mat' }],
+  },
+  'dead-bug': {
+    anchor: 'pelvis',
+    labels: ['Brazos arriba, piernas en mesa', 'Brazo y pierna contraria'],
+    frames: [
+      side(-90, { upperArm: 180, forearm: 180, thigh: 180, shin: 90, foot: 180 }, { upperArm: 176, forearm: 176, thigh: 180, shin: 90, foot: 180 }, { head: -90 }),
+      side(-90, { upperArm: -80, forearm: -80, thigh: 180, shin: 90, foot: 180 }, { upperArm: 176, forearm: 176, thigh: 100, shin: 100, foot: 170 }, { head: -90 }),
+    ],
+    props: [{ type: 'mat' }],
+  },
+  'mountain-climber': {
+    anchor: 'near.hand',
+    labels: ['Plancha con las manos', 'Rodilla al pecho'],
+    frames: [
+      side(64, { upperArm: 0, forearm: 0, thigh: -64, shin: -64, foot: 20 }, { upperArm: 3, forearm: 2, thigh: -64, shin: -64, foot: 20 }),
+      side(64, { upperArm: 0, forearm: 0, thigh: 75, shin: -30, foot: 60 }, { upperArm: 3, forearm: 2, thigh: -64, shin: -64, foot: 20 }),
+    ],
+    props: [{ type: 'mat' }],
+  },
+  'step-jack': {
+    anchor: 'far.ankle',
+    labels: ['Brazos abajo', 'Paso al lado, brazos arriba'],
+    frames: [front({}, {}), front({ upperArm: 155, forearm: 165, thigh: 24, shin: 22 }, { upperArm: 155, forearm: 165 })],
+    props: [],
+  },
+  'high-knees': {
+    anchor: 'far.ankle',
+    labels: ['Rodilla a la cadera', 'Cambia rápido'],
+    frames: [
+      side(0, { upperArm: -40, forearm: 20, thigh: 95, shin: 0, foot: 80 }, { upperArm: 40, forearm: 110 }),
+      side(0, { upperArm: 40, forearm: 110 }, { upperArm: -40, forearm: 20, thigh: 95, shin: 0, foot: 80 }),
+    ],
+    props: [],
+  },
+  skater: {
+    anchor: 'pelvis',
+    labels: ['Pierna cruzada atrás', 'Cambia de lado'],
+    frames: [
+      front({ upperArm: -30, forearm: -40, thigh: 10, shin: -4 }, { upperArm: 50, forearm: 50, thigh: -18, shin: -14 }, { torso: 8 }),
+      front({ upperArm: 50, forearm: 50, thigh: -18, shin: -14 }, { upperArm: -30, forearm: -40, thigh: 10, shin: -4 }, { torso: -8 }),
+    ],
+    props: [],
   },
 
   // ——— Movilidad ———

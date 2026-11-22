@@ -50,6 +50,37 @@ export const WARMUPS: Partial<Record<RoutineId, WarmUp>> = {
       { exerciseId: 'bodyweight-squat', sets: 1, target: '8' },
     ],
   },
+  d: {
+    durationLabel: '3 min',
+    focus: 'Sube el pulso poco a poco y prepara tobillos y rodillas para moverte rápido.',
+    items: [
+      { exerciseId: 'march-in-place', sets: 1, target: '1 min' },
+      { exerciseId: 'arm-circles', sets: 1, target: '10 adelante + 10 atrás' },
+      { exerciseId: 'ankle-circles', sets: 1, target: '10 s por dirección, cada pie' },
+      { exerciseId: 'bodyweight-squat', sets: 1, target: '8' },
+    ],
+  },
+  e: {
+    durationLabel: '4 min',
+    focus: 'Despierta los glúteos y la cadera antes de cargarlos con la liga morada.',
+    items: [
+      { exerciseId: 'march-in-place', sets: 1, target: '1 min' },
+      { exerciseId: 'hip-circles', sets: 1, target: '20 s por dirección' },
+      { exerciseId: 'leg-swings', sets: 1, target: '10 por pierna' },
+      { exerciseId: 'hip-hinge', sets: 1, target: '10' },
+      { exerciseId: 'bodyweight-squat', sets: 1, target: '8' },
+    ],
+  },
+  f: {
+    durationLabel: '3 min',
+    focus: 'Moviliza la espalda y los hombros antes de trabajar el abdomen en el piso.',
+    items: [
+      { exerciseId: 'march-in-place', sets: 1, target: '1 min' },
+      { exerciseId: 'torso-twists', sets: 1, target: '10 por lado' },
+      { exerciseId: 'cat-cow', sets: 1, target: '6 respiraciones' },
+      { exerciseId: 'arm-circles', sets: 1, target: '10 adelante + 10 atrás' },
+    ],
+  },
   short: {
     durationLabel: '2 min',
     focus: 'Un calentamiento breve para que la rutina corta siga siendo corta.',

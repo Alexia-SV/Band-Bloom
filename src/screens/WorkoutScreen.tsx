@@ -48,6 +48,12 @@ const PRIMARY =
 const QUIET =
   'inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-ink-700 transition hover:bg-white/70'
 
+function bandLabel(override: Extract<WorkoutStep, { kind: 'exercise' }>['band'], exerciseBand: string): string {
+  if (override === 'purple') return 'Liga morada'
+  if (override === 'none' || (!override && exerciseBand === 'Sin liga')) return 'Sin liga'
+  return 'Liga rosa'
+}
+
 function isReps(target: string): boolean {
   return /^[\d–-]+$/.test(target)
 }
@@ -131,8 +137,13 @@ function ExerciseStep({
             </span>
           )}
           <span className="inline-flex items-center gap-1.5 text-sm">
-            <BandIcon size={15} aria-hidden="true" /> {exercise.band === 'Sin liga' ? 'Sin liga' : 'Liga rosa'}
+            <BandIcon size={15} aria-hidden="true" /> {bandLabel(step.band, exercise.band)}
           </span>
+          {step.cue && (
+            <span className="inline-flex items-center rounded-full bg-peach-100 px-2.5 py-0.5 text-sm font-semibold text-peach-700">
+              {step.cue}
+            </span>
+          )}
         </p>
       </div>
 

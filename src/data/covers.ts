@@ -40,6 +40,28 @@ export const ROUTINE_COVERS: Record<RoutineId, CoverPhoto> = {
     photographer: 'RDNE Stock project',
     sourceUrl: 'https://www.pexels.com/photo/woman-working-out-8401806/',
   },
+  // D, E y F reusan fotos que ya vienen en la app (no hace falta descargar nada nuevo).
+  d: {
+    src: routineB,
+    alt: 'Mujer sonriente con los brazos arriba, lista para moverse',
+    position: '50% 40%',
+    photographer: 'Kaboompics.com',
+    sourceUrl: 'https://www.pexels.com/photo/woman-in-activewear-using-a-resistance-band-4378995/',
+  },
+  e: {
+    src: routineShort,
+    alt: 'Piernas con una liga rosa, listas para trabajar glúteos',
+    position: '55% 50%',
+    photographer: 'MART PRODUCTION',
+    sourceUrl: 'https://www.pexels.com/photo/a-woman-waring-a-feet-band-in-exercising-8846567/',
+  },
+  f: {
+    src: routineMobility,
+    alt: 'Mujer sentada en el tapete, preparándose para trabajar el abdomen',
+    position: '50% 45%',
+    photographer: 'Katrin Bolovtsova',
+    sourceUrl: 'https://www.pexels.com/photo/photo-of-woman-stretching-4051518/',
+  },
   short: {
     src: routineShort,
     alt: 'Piernas con una liga rosa arriba de los tobillos en una sala',

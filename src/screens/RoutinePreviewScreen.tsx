@@ -107,7 +107,13 @@ export function RoutinePreviewScreen({ routineId }: { routineId: RoutineId }) {
                 href={routeHref({ name: 'exercise', routineId, part: 'main', index })}
                 exerciseId={item.exerciseId}
                 number={index + 1}
-                detail={item.sets > 1 ? `${item.sets} × ${item.target}` : item.target}
+                detail={[
+                  item.sets > 1 ? `${item.sets} × ${item.target}` : item.target,
+                  item.band === 'purple' ? 'liga morada' : null,
+                  item.cue ?? null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
                 tone={routine.tone}
               />
             </li>

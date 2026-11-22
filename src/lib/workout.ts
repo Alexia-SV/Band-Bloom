@@ -1,7 +1,7 @@
 import { getExercise } from '../data/exercises'
 import { getRoutine, isRoutineId } from '../data/routines'
 import { getWarmUp } from '../data/warmups'
-import type { CompletedSet, ISODate, RoutineId, WorkoutSession } from '../types'
+import type { CompletedSet, ISODate, RoutineId, RoutineItem, WorkoutSession } from '../types'
 import { dayOf, toISODate } from './dates'
 import type { ExercisePart } from './router'
 import { parseRest, phasesForItem, type TimerPhase } from './timer'
@@ -21,6 +21,10 @@ export type WorkoutStep =
       /** Lugar del ejercicio dentro de su parte ("Ejercicio 2 de 4"). */
       position: number
       total: number
+      /** Liga de esta rutina si cambia la del ejercicio (por ejemplo, morada en piernas). */
+      band?: RoutineItem['band']
+      /** Indicación para hacerlo más intenso: "Baja en 3 s". */
+      cue?: string
     }
   | {
       kind: 'rest'
@@ -71,6 +75,8 @@ export function buildWorkout(routineId: RoutineId): WorkoutStep[] {
         phases: phasesForItem(item.target, exercise?.target ?? ''),
         position: index + 1,
         total: routine.items.length,
+        ...(item.band ? { band: item.band } : {}),
+        ...(item.cue ? { cue: item.cue } : {}),
       })
       const nextItem = set < item.sets ? item : routine.items[index + 1]
       if (withRest && nextItem) {

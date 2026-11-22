@@ -1,8 +1,9 @@
+import { STRENGTH_ROTATION } from '../data/routines'
 import type { StrengthRoutineId, WeekdayKey, WeeklyPlan } from '../types'
 import { WEEK_ORDER } from './dates'
 
 export const MAX_TRAINING_DAYS = 6
-const ROTATION: StrengthRoutineId[] = ['a', 'b', 'c']
+const BASIC_ROTATION: StrengthRoutineId[] = ['a', 'b', 'c']
 
 /**
  * Convierte los días elegidos en un plan semanal:
@@ -11,10 +12,12 @@ const ROTATION: StrengthRoutineId[] = ['a', 'b', 'c']
  */
 export function planFromTrainingDays(days: WeekdayKey[]): WeeklyPlan {
   const plan = {} as WeeklyPlan
+  // Hasta 3 días: A → B → C. Con más días se suman cardio, core y glúteos para no repetir grupo.
+  const rotation = days.length > 3 ? STRENGTH_ROTATION : BASIC_ROTATION
   let next = 0
   for (const day of WEEK_ORDER) {
     if (days.includes(day)) {
-      plan[day] = { type: 'strength', routineId: ROTATION[next % ROTATION.length] }
+      plan[day] = { type: 'strength', routineId: rotation[next % rotation.length] }
       next++
     } else {
       plan[day] = day === 'sun' ? { type: 'rest' } : { type: 'mobility-optional' }

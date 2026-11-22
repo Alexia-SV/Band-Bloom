@@ -1,4 +1,4 @@
-import { getRoutine } from '../data/routines'
+import { getRoutine, STRENGTH_ROTATION } from '../data/routines'
 import type {
   AppData,
   ISODate,
@@ -10,7 +10,6 @@ import type {
 } from '../types'
 import { addDays, isInSameWeek, toISODate, weekDates, weekdayKey } from './dates'
 
-const STRENGTH_ROTATION: StrengthRoutineId[] = ['a', 'b', 'c']
 
 export type TodayRecommendation =
   /**
@@ -60,7 +59,7 @@ function isMobilitySession(session: WorkoutSession): boolean {
  * Reglas:
  * - Solo cuentan sesiones con status 'completed' (abrir una rutina no cuenta).
  * - Saltarse un día no genera pendientes: cada día se sugiere lo que toca ese día.
- * - Si la rutina del día ya se hizo antes en la semana, se sugiere la siguiente de A→B→C que falte.
+ * - Si la rutina del día ya se hizo antes en la semana, se sugiere la siguiente del plan que falte.
  */
 export function buildDashboard(data: AppData, now: Date): DashboardSummary {
   const today = toISODate(now)
@@ -85,9 +84,13 @@ export function buildDashboard(data: AppData, now: Date): DashboardSummary {
     if (strengthThisWeek.length >= weeklyStrengthGoal) {
       recommendation = { kind: 'weekly-goal-met' }
     } else {
+      // Primero las rutinas que están en el plan, luego las demás.
+      const inPlan = new Set(Object.values(plan).flatMap((slot) => (slot.type === 'strength' ? [slot.routineId] : [])))
+      const others = STRENGTH_ROTATION.filter((id) => id !== todaySlot.routineId)
       const candidates = [
         todaySlot.routineId,
-        ...STRENGTH_ROTATION.filter((id) => id !== todaySlot.routineId),
+        ...others.filter((id) => inPlan.has(id)),
+        ...others.filter((id) => !inPlan.has(id)),
       ]
       const routineId = candidates.find((id) => !routinesDoneThisWeek.has(id)) ?? todaySlot.routineId
       recommendation = {

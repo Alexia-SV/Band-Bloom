@@ -3,7 +3,11 @@ export type ISODate = string
 
 export type WeekdayKey = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
 
-export type StrengthRoutineId = 'a' | 'b' | 'c'
+/**
+ * Rutinas de entrenamiento: A piernas · B tren superior · C cuerpo completo ·
+ * D cardio sin saltos · E glúteos · F core. Todas cuentan para la meta semanal.
+ */
+export type StrengthRoutineId = 'a' | 'b' | 'c' | 'd' | 'e' | 'f'
 export type RoutineId = StrengthRoutineId | 'short' | 'mobility'
 export type RoutineKind = 'strength' | 'short' | 'mobility'
 
@@ -48,7 +52,14 @@ export interface RoutineItem {
   sets: number
   /** Objetivo legible: "8–12", "6–8 por lado", "1 min"… */
   target: string
+  /** Liga para este ejercicio en esta rutina, si es distinta de la del ejercicio. */
+  band?: 'pink' | 'purple' | 'none'
+  /** Indicación para hacerlo más intenso: "Baja en 3 s", "Pausa 2 s arriba"… */
+  cue?: string
 }
+
+/** Grupo principal que trabaja una rutina; sirve para no repetir el mismo dos días seguidos. */
+export type RoutineFocus = 'legs' | 'upper' | 'full' | 'cardio' | 'core' | 'mobility'
 
 export interface Routine {
   id: RoutineId
@@ -59,6 +70,7 @@ export interface Routine {
   durationLabel: string
   muscleGroups: string[]
   equipment: string[]
+  focus: RoutineFocus
   tone: Tone
   items: RoutineItem[]
 }
