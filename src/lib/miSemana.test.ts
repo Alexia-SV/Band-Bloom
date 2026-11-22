@@ -46,6 +46,15 @@ describe('planExerciseCompletion', () => {
     expect(next).toMatchObject({ id: 'n1', dia: '2026-10-20', hecho: false, nota: 'Bloque desde las 11 p. m.', repite: DIARIO })
   })
 
+  it('una nota de descanso de otro día no pasa al siguiente ni convierte "hecho" en descanso', () => {
+    const { update, next } = planExerciseCompletion(task({ nota: REST_NOTE }), '2026-10-19', 'done', 'n1')
+    expect(update.nota).toBe('Bloque desde las 11 p. m. con Band&Bloom')
+    expect(next?.nota).toBe('Bloque desde las 11 p. m. con Band&Bloom')
+    const rest = planExerciseCompletion(task({ nota: REST_NOTE }), '2026-10-19', 'rest', 'n1')
+    expect(rest.update.nota).toBe(REST_NOTE)
+    expect(rest.next?.nota).toBe('Bloque desde las 11 p. m. con Band&Bloom')
+  })
+
   it('si venía de días anteriores, queda hecho hoy y el siguiente es mañana', () => {
     const { update, next } = planExerciseCompletion(task({ dia: '2026-10-17' }), '2026-10-19', 'done', 'n1')
     expect(update.dia).toBe('2026-10-19')

@@ -19,6 +19,11 @@ export const EXERCISE_HABIT = { area: 'casa', sub: 'Ejercicio' } as const
 /** La misma nota que pone "Hoy descanso" en Mi Semana: cuenta como descanso y no rompe la racha. */
 export const REST_NOTE = 'Hoy fue descanso 🌙'
 
+/** Notas que en Mi Semana cuentan como descanso. Son solo de ese día: no pasan al siguiente pendiente. */
+const REST_NOTES = [REST_NOTE, 'Día pesado, descansé 🫶']
+/** Nota normal del hábito de ejercicio en Mi Semana. */
+export const EXERCISE_NOTE = 'Bloque desde las 11 p. m. con Band&Bloom'
+
 /** Mi Semana (y Band & Bloom) cambian de día a las 4 a. m.: entrenar a las 12:30 a. m. cuenta para el día anterior. */
 export function miSemanaDay(now: Date): ISODate {
   return toISODate(dayOf(now))
@@ -43,6 +48,8 @@ export function nextRepeatDay(from: ISODate, repite: number[]): ISODate {
 export function planExerciseCompletion(task: MiSemanaTask, day: ISODate, kind: 'done' | 'rest', nextId: string) {
   const dia = !task.dia || task.dia < day ? day : task.dia
   const repite = task.repite ?? []
+  // Si el pendiente traía una nota de descanso de otro día, se limpia: si no, "hecho" contaría como descanso.
+  const nota = REST_NOTES.includes(task.nota) ? EXERCISE_NOTE : task.nota
   const next = repite.length
     ? {
         id: nextId,
@@ -50,7 +57,7 @@ export function planExerciseCompletion(task: MiSemanaTask, day: ISODate, kind: '
         area: task.area,
         sub: task.sub,
         obligatorio: task.obligatorio,
-        nota: task.nota,
+        nota,
         repite,
         dia: nextRepeatDay(dia, repite),
         hecho: false,
@@ -63,7 +70,7 @@ export function planExerciseCompletion(task: MiSemanaTask, day: ISODate, kind: '
     hecha_en: day,
     dia,
     siguiente: next ? next.id : null,
-    ...(kind === 'rest' ? { nota: REST_NOTE } : {}),
+    ...(kind === 'rest' ? { nota: REST_NOTE } : nota !== task.nota ? { nota } : {}),
   }
   return { update, next }
 }
