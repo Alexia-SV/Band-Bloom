@@ -3,7 +3,7 @@ import { SecondaryButton } from '../../components/ui/Buttons'
 import { Card } from '../../components/ui/Card'
 import { ScreenHeader } from '../../components/ui/ScreenHeader'
 import { getRoutine, isStrengthRoutineId, routineTitle, STRENGTH_ROTATION } from '../../data/routines'
-import { DAILY_WEEKLY_GOAL, DAILY_WEEKLY_PLAN } from '../../data/weeklyPlan'
+import { DAILY_WEEKLY_GOAL, DAILY_WEEKLY_PLAN, DEFAULT_WEEKLY_STRENGTH_GOAL } from '../../data/weeklyPlan'
 import { capitalize, WEEK_ORDER, WEEKDAY_NAME } from '../../lib/dates'
 import { useAppData } from '../../state/useAppData'
 import type { PlanSlot, StrengthRoutineId, WeekdayKey, WeeklyPlan } from '../../types'
@@ -55,6 +55,10 @@ export function ScheduleScreen() {
   const { plan, weeklyStrengthGoal } = data.preferences
   const strengthDays = WEEK_ORDER.filter((day) => plan[day].type === 'strength')
   const repeated = repeatedDays(plan)
+  const useThreeDayPlan = () => {
+    resetPlan()
+    updatePreferences({ weeklyStrengthGoal: DEFAULT_WEEKLY_STRENGTH_GOAL })
+  }
   const useDailyPlan = () => {
     for (const day of WEEK_ORDER) setPlanDay(day, DAILY_WEEKLY_PLAN[day])
     updatePreferences({ weeklyStrengthGoal: DAILY_WEEKLY_GOAL })
@@ -115,8 +119,8 @@ export function ScheduleScreen() {
             )
           })}
         </ul>
-        <SecondaryButton onClick={resetPlan} icon={RotateCcw} className="-ml-4 mt-2">
-          Volver al plan recomendado
+        <SecondaryButton onClick={useThreeDayPlan} icon={RotateCcw} className="-ml-4 mt-2">
+          Cambiar al plan de 3 días
         </SecondaryButton>
       </Card>
 

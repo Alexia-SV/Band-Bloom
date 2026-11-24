@@ -1,6 +1,11 @@
 import { CUSTOM_MESSAGE_MAX_LENGTH, DEFAULT_REMINDERS } from '../data/reminders'
 import { isRoutineId, isStrengthRoutineId } from '../data/routines'
-import { DEFAULT_WEEKLY_PLAN, DEFAULT_WEEKLY_STRENGTH_GOAL } from '../data/weeklyPlan'
+import {
+  DAILY_WEEKLY_GOAL,
+  DAILY_WEEKLY_PLAN,
+  DEFAULT_WEEKLY_PLAN,
+  DEFAULT_WEEKLY_STRENGTH_GOAL,
+} from '../data/weeklyPlan'
 import type {
   AppData,
   PersonalNote,
@@ -30,6 +35,7 @@ export function createDefaultAppData(): AppData {
       name: '',
       weeklyStrengthGoal: DEFAULT_WEEKLY_STRENGTH_GOAL,
       plan: { ...DEFAULT_WEEKLY_PLAN },
+      planVersion: 2,
       preferredSession: 'full',
       favoriteRoutineIds: [],
       onboardingCompleted: false,
@@ -92,6 +98,15 @@ function sanitizeReminders(value: unknown): ReminderSettings {
   }
 }
 
+/** ¿Es un plan hecho antes de las rutinas D, E y F (solo usa A, B y C)? */
+function isOldPlan(planVersion: unknown, plan: WeeklyPlan): boolean {
+  if (planVersion === 2) return false
+  return WEEK_ORDER.every((day) => {
+    const slot = plan[day]
+    return slot.type !== 'strength' || slot.routineId === 'a' || slot.routineId === 'b' || slot.routineId === 'c'
+  })
+}
+
 function sanitizePreferences(value: unknown, hasHistory: boolean): UserPreferences {
   const defaults = createDefaultAppData().preferences
   if (!isRecord(value)) return defaults
@@ -103,15 +118,20 @@ function sanitizePreferences(value: unknown, hasHistory: boolean): UserPreferenc
     }
   }
 
+  // Los planes de antes pasan una sola vez al plan diario. Se hace al leer (aquí y con lo que llega de la
+  // nube), así cada dispositivo llega a lo mismo sin pisar lo que el otro tenga guardado.
+  const toDaily = isRecord(value.plan) && isOldPlan(value.planVersion, plan)
   const goal = value.weeklyStrengthGoal
   const favorites = Array.isArray(value.favoriteRoutineIds)
     ? value.favoriteRoutineIds.filter((id): id is RoutineId => typeof id === 'string' && isRoutineId(id))
     : []
+  const savedGoal =
+    typeof goal === 'number' && Number.isInteger(goal) && goal >= 1 && goal <= 7 ? goal : defaults.weeklyStrengthGoal
   return {
     name: typeof value.name === 'string' ? value.name.slice(0, 40) : '',
-    weeklyStrengthGoal:
-      typeof goal === 'number' && Number.isInteger(goal) && goal >= 1 && goal <= 7 ? goal : defaults.weeklyStrengthGoal,
-    plan,
+    weeklyStrengthGoal: toDaily ? Math.max(savedGoal, DAILY_WEEKLY_GOAL) : savedGoal,
+    plan: toDaily ? { ...DAILY_WEEKLY_PLAN } : plan,
+    planVersion: 2,
     preferredSession: value.preferredSession === 'short' ? 'short' : 'full',
     favoriteRoutineIds: [...new Set(favorites)],
     // Datos guardados antes de existir el onboarding: si ya hay historial, no lo volvemos a pedir.

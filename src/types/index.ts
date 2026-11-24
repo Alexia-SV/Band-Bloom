@@ -101,6 +101,8 @@ export interface UserPreferences {
   name: string
   weeklyStrengthGoal: number
   plan: WeeklyPlan
+  /** 2 = ya conoce las seis rutinas (A–F). Los planes de antes no la traen y pasan una sola vez al plan diario. */
+  planVersion?: 2
   preferredSession: PreferredSession
   favoriteRoutineIds: RoutineId[]
   /** false hasta terminar (o saltar) la configuración inicial. */

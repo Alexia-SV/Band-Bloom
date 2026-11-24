@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import type { AppData, RoutineId, WorkoutSession } from '../types'
 import { buildDashboard } from './recommendation'
 import { createDefaultAppData, sanitizeAppData } from './storage'
+import { mergeCloud } from './sync'
+import { DAILY_WEEKLY_PLAN, DEFAULT_WEEKLY_PLAN } from '../data/weeklyPlan'
 
 // Semana de referencia: lunes 19 a domingo 25 de octubre de 2026.
 const MONDAY = new Date(2026, 9, 19)
@@ -124,5 +126,43 @@ describe('sanitizeAppData', () => {
     expect(result?.preferences.name).toBe('Alexia')
     expect(result?.preferences.weeklyStrengthGoal).toBe(3)
     expect(result?.preferences.plan.mon).toEqual({ type: 'strength', routineId: 'a' })
+  })
+
+  describe('paso al plan diario', () => {
+    const oldPlan = () => {
+      const preferences: Record<string, unknown> = { ...createDefaultAppData().preferences }
+      delete preferences.planVersion
+      return { ...createDefaultAppData(), preferences }
+    }
+
+    it('un plan de antes (solo A, B y C) pasa al diario: el martes ya toca tren superior', () => {
+      const data = sanitizeAppData(oldPlan())!
+      expect(data.preferences.plan).toEqual(DAILY_WEEKLY_PLAN)
+      expect(data.preferences.weeklyStrengthGoal).toBe(6)
+      const tuesday = buildDashboard({ ...data, sessions: [session('a', '2026-10-19')] }, TUESDAY)
+      expect(tuesday.today).toMatchObject({ kind: 'strength', routineId: 'b', planned: true })
+    })
+
+    it('pasa una sola vez: si después eliges el de 3 días, se respeta', () => {
+      const migrated = sanitizeAppData(oldPlan())!
+      const back = { ...migrated, preferences: { ...migrated.preferences, plan: { ...DEFAULT_WEEKLY_PLAN }, weeklyStrengthGoal: 3 } }
+      const again = sanitizeAppData(JSON.parse(JSON.stringify(back)))!
+      expect(again.preferences.plan).toEqual(DEFAULT_WEEKLY_PLAN)
+      expect(again.preferences.weeklyStrengthGoal).toBe(3)
+    })
+
+    it('no toca un plan que ya usa las rutinas nuevas', () => {
+      const custom = oldPlan()
+      custom.preferences.plan = { ...DEFAULT_WEEKLY_PLAN, tue: { type: 'strength', routineId: 'd' } }
+      const data = sanitizeAppData(custom)!
+      expect(data.preferences.plan.tue).toEqual({ type: 'strength', routineId: 'd' })
+      expect(data.preferences.plan.thu).toEqual({ type: 'mobility-optional' })
+    })
+
+    it('lo que llega de la nube con el plan viejo también pasa al diario, sin marcarse como cambio local', () => {
+      const local = sanitizeAppData(oldPlan())!
+      const { merged } = mergeCloud(oldPlan(), [], local, 'cloud')
+      expect(sanitizeAppData(merged)?.preferences.plan).toEqual(DAILY_WEEKLY_PLAN)
+    })
   })
 })

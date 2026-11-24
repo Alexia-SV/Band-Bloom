@@ -1,5 +1,5 @@
 import { CircleCheck, RefreshCw, X } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 /**
@@ -7,11 +7,22 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
  * una versión nueva. La nueva versión se aplica al tocar "Actualizar", nunca a medio entrenamiento.
  */
 export function UpdatePrompt() {
+  const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     offlineReady: [offlineReady, setOfflineReady],
     updateServiceWorker,
-  } = useRegisterSW()
+  } = useRegisterSW({ onRegisteredSW: (_url, r) => setRegistration(r) })
+
+  // En el iPhone la app instalada se queda abierta por días: al volver a ella, pregunta si hay versión nueva.
+  useEffect(() => {
+    if (!registration) return
+    const check = () => {
+      if (document.visibilityState === 'visible') registration.update().catch(() => {}) // sin internet: la próxima vez
+    }
+    document.addEventListener('visibilitychange', check)
+    return () => document.removeEventListener('visibilitychange', check)
+  }, [registration])
 
   // "Lista sin internet" solo se muestra un momento.
   useEffect(() => {
